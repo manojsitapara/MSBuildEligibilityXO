@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
+
+  <!--Refer this task for db deploy.-->
+  <UsingTask TaskName="MSBuild.Dbdeploy.Task.Dbdeploy" AssemblyFile="$(MSBuildDbdeployTaskDbdeploy)"/>
+
+  <UsingTask TaskName="SendEmail" AssemblyFile="$(EmailTaskLibrary)" />
+
+  <!--Refer this task for config changes-->
+  <UsingTask TaskName="XmlPreprocess" AssemblyFile="$(XmlPreProcessorLibrary)"/>
+
+  <!--Refer to the ReplaceValueInFile to update Xml config value. This is used to find and replace values into config files.-->
+  <UsingTask TaskName="FindAndReplace" AssemblyFile="$(FindAndReplaceTaskLibrary)" />
+  
+  <UsingTask TaskName="CommandFileTransformation" AssemblyFile="$(CommandFileTransformationLibrary)" />
+
+  
+  
+  <!--This target will use custom c# code which accept input of current assembly version and return updated assembly version.-->
+  <UsingTask TaskName="GenerateNewAssemblyVersionNumber" TaskFactory="CodeTaskFactory"  AssemblyFile="$(MicrosoftBuildTasks)" >
+
+    <ParameterGroup>
+      <OldAssemblyVersion ParameterType="System.String" Required="true"/>
+      <NewAssemblyVersion ParameterType="System.String" Output="true"/>
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[ 
+        
+             string[] assemblyParts = OldAssemblyVersion.Split('.');
+
+            if (assemblyParts.Length != 4)
+            {
+                throw new Exception("Invalid assembly version");
+            }
+            
+            var major = assemblyParts[0];
+            var minor = assemblyParts[1];
+            var revision = assemblyParts[2];
+            
+
+            string year = System.DateTime.Now.Year.ToString();
+            string currentMonth = System.DateTime.Now.ToString("MM");
+            
+            if ( major != year)
+            {
+                NewAssemblyVersion = year + "." + currentMonth + ".01.0";    
+
+            }
+            else
+            {
+                if (minor != currentMonth)
+                {
+                    NewAssemblyVersion = year + "." + currentMonth + ".01.0";
+                }
+                else
+                {
+                    int setVersionNumber = Convert.ToInt32(revision) + 1;
+                    NewAssemblyVersion = year + "." + currentMonth + "." + setVersionNumber.ToString("D2") + ".0";    
+                }
+                
+                
+            }
+        
+        
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+
+ 
+  <!--Send msbuild failed error email notification-->
+  <Target Name="SendEmailNotification">
+    <SendEmail
+      ToEmailAddress="$(ErrorNotificationToAddress)"
+      Subject="Build failed"
+      Message="Target name $(CurrentTargetName) has been failed to execute. " />
+  </Target>
+  
+  
+
+
+</Project>

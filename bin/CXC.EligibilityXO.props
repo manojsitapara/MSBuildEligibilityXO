@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
+
+  <PropertyGroup>
+    <Environment>QA</Environment>
+ 
+    <SvnUsername></SvnUsername>
+    <SvnPassword></SvnPassword>
+  </PropertyGroup>
+
+
+  <Import Project="CXC.EligibilityXO.QA.props" Condition="$(Environment) == 'QA'"/>
+  <Import Project="CXC.EligibilityXO.Production.props" Condition="$(Environment) == 'Production'"/>
+  
+
+
+  <!--DO NOT MODIFY FOLLOWING PROPERTY GROUP-->
+  <PropertyGroup>
+
+    <PreviousAssemblyVersionNumber></PreviousAssemblyVersionNumber>
+    <NewAssemblyVersion></NewAssemblyVersion>
+    <DbDeployScriptFolderName>DbDeployScript</DbDeployScriptFolderName>
+    <DbDeployScriptInputFolderName>$(DbDeployScriptFolderName)\Input</DbDeployScriptInputFolderName>
+    <DbDeployScriptOutputFolderName>$(DbDeployScriptFolderName)\Output</DbDeployScriptOutputFolderName>
+    <AppFolderName>App</AppFolderName>
+    <WorkflowScriptFolderName>Workflow</WorkflowScriptFolderName>
+
+    <CurrentTargetName></CurrentTargetName>
+
+    <CurrentDateTime>$([System.DateTime]::Now.ToString(yyyyMMdd_hh_mm_ss))</CurrentDateTime>
+    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd))</CurrentDate>
+
+
+    <!-- Specify the path of source code -->
+    <SourceDir>$(RootDir)\Source</SourceDir>
+    <!-- Specify the path to save build code -->
+    <BuildDir>$(RootDir)\Build</BuildDir>
+   
+    <!-- Specify the path to backup -->
+    <BackupDir>$(RootDir)\Backup</BackupDir>
+
+
+
+    <!-- Specify the path to backup of source code -->
+    <BackupDirForSource>$(BackupDir)\Source</BackupDirForSource>
+    <!-- Specify the path to backup of deployment code -->
+    <BackupDirForDeployment>$(BackupDir)\Deployment</BackupDirForDeployment>
+    <!-- Specify the path to backup of database -->
+    <BackupDirForDatabase>$(BackupDir)\Database</BackupDirForDatabase>
+    <!-- Specify the path to back up build code on server -->
+    <BackupDirForDestination>$(BackupDir)\Destination</BackupDirForDestination>
+
+
+    
+
+
+    <!--Specify the path for deployment directory (i.e. ready to run code) -->
+    <DeploymentDir>$(RootDir)\Deployment</DeploymentDir>
+
+    <TempDir>$(BuildDir)\temp</TempDir>
+    <TempAssemblyFile>$(TempDir)\AssemblyVersionNumber.txt</TempAssemblyFile>
+
+    <BuildDirForApp>$(BuildDir)\$(AppFolderName)</BuildDirForApp>
+    <BuildDirForWorkflowFiles>$(BuildDir)\$(WorkflowScriptFolderName)</BuildDirForWorkflowFiles>
+    <BuildDirForCommonWorkflowScript>$(BuildDirForWorkflowScript)\Common</BuildDirForCommonWorkflowScript>
+    <BuildDirForDbDeploy>$(BuildDir)\$(DbDeployScriptInputFolderName)</BuildDirForDbDeploy>
+    <BuildDirForDbDeployOutput>$(BuildDir)\$(DbDeployScriptOutputFolderName)</BuildDirForDbDeployOutput>
+
+
+    <dbDeployDBName>MsBuildDbDeploy</dbDeployDBName>
+    <DatabaseChangeLogTableName>Changelog</DatabaseChangeLogTableName>
+    <DeploymentDirForApp>$(DeploymentDir)\$(AppFolderName)</DeploymentDirForApp>
+    <DeploymentDirForDbDeploy>$(DeploymentDir)\$(DbDeployScriptFolderName)</DeploymentDirForDbDeploy>
+    
+    
+
+    <BuildDirForCXCCoreSchemaChangesSql>$(BuildDirForDbDeploy)\CXCCore\1.CXCCore_SchemaChanges</BuildDirForCXCCoreSchemaChangesSql>
+    <BuildDirForCXCCoreMetaChangesSql>$(BuildDirForDbDeploy)\CXCCore\2.CXCCore_Meta</BuildDirForCXCCoreMetaChangesSql>
+
+
+    <XmlPreprocessorCleanFile>true</XmlPreprocessorCleanFile>
+    <XmlPreprocessorValidateFile>true</XmlPreprocessorValidateFile>
+
+    <!-- This setting is for command file transformation -->
+    <PropertiesColumnInSettingSpreadsheet>Environment Name</PropertiesColumnInSettingSpreadsheet>
+
+
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(SqlServerName);Initial Catalog=$(dbDeployDBName);Integrated Security=SSPI</DatabaseConnectionString>
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(SqlServerName);Initial Catalog=$(dbDeployDBName);User Id=$(SqlServerUserName);Password=$(SqlServerPassword)</DatabaseConnectionString>
+
+
+    <LogDir>..\Log</LogDir>
+    <TempDirForLog>$(LogDir)\temp</TempDirForLog>
+    <ErrorLogFileName>$(TempDirForLog)\CXC.EligibilityXO.MSBuild.Error_$(CurrentDateTime).log</ErrorLogFileName>
+    <LogFileName>$(LogDir)\CXC.EligibilityXO.MSBuild_$(CurrentDateTime).log</LogFileName>
+
+    <EmailNotificationFromAddress>alertsqa@cxcnetwork.com</EmailNotificationFromAddress>
+    
+    
+    
+    <MSBuildCommunityTaskstargets>..\lib\MSBuild.Community.Tasks.targets</MSBuildCommunityTaskstargets>
+    <MSBuildExtensionPacktargets>..\lib\MSBuild.Extension.Pack.1.8.0\build\net40\MSBuild.Extension.Pack.targets</MSBuildExtensionPacktargets>
+    <MSBuildDbdeployTaskDbdeploy>..\lib\MSBuild.Dbdeploy.Task.dll</MSBuildDbdeployTaskDbdeploy>
+    <EmailTaskLibrary>..\lib\EmailUtility.dll</EmailTaskLibrary>
+    <FindAndReplaceTaskLibrary>..\lib\ReplaceValueInFile.dll</FindAndReplaceTaskLibrary>
+    <MicrosoftBuildTasks>..\lib\Microsoft.Build.Tasks.v4.0.dll</MicrosoftBuildTasks>
+    <DbDeployTemplateDir>..\lib\Resources</DbDeployTemplateDir>
+    <ConfigValuesSpreadsheetFileLocation>$(MSBuildThisFileDirectory)..\SettingsSpreadsheet\SettingsSpreadsheet.xls</ConfigValuesSpreadsheetFileLocation>
+    <CommandFileTransformationLibrary>..\lib\CXC.CommandFileTransformation.dll</CommandFileTransformationLibrary>
+    <XmlPreProcessorLibrary>..\lib\XmlPreprocess.MSBuildTasks.dll</XmlPreProcessorLibrary>
+    <LibDir>$(MSBuildThisFileDirectory)..\lib</LibDir>
+
+    
+  </PropertyGroup>
+
+
+
+
+  <ItemGroup>
+
+    <SolutionName Include="$(SourceDir)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"  Condition="$(BuildABG)=='true' ">
+      
+      <TPAName>ABG</TPAName>
+
+      <SourceDirForMetaChangeScript>$(SourceDir)\TPA\ABG\Build\MetaChanges</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>$(SourceDir)\TPA\ABG\Build\DataChanges</SourceDirForDataChangeScript>
+      <SourceDirForWorkflowScript>$(SourceDir)\TPA\ABG\Scripts</SourceDirForWorkflowScript>
+      
+      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\1.ABG_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\2.ABG_MetaChanges</BuildDirForMetaSqlScript>
+      <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
+
+      <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
+      
+    </SolutionName>
+
+    
+    <SolutionName Include="$(SourceDir)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
+      
+      <TPAName>PrimePay</TPAName>
+
+      <SourceDirForMetaChangeScript>$(SourceDir)\TPA\PrimePay\Build\MetaChanges</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>$(SourceDir)\TPA\PrimePay\Build\DataChanges</SourceDirForDataChangeScript>
+      <SourceDirForWorkflowScript>$(SourceDir)\TPA\PrimePay\Scripts</SourceDirForWorkflowScript>
+
+      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\2.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
+      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\1.PrimePay_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
+
+      <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
+      
+    </SolutionName>
+
+  </ItemGroup>
+ 
+
+
+
+</Project>

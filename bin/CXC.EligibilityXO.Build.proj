@@ -1,0 +1,967 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
+
+  <!--Msbuild command: msbuild CXC.EligibilityXO.Build.proj /p:Environment="Production"-->
+  <!--msbuild CXC.EligibilityXO.Build.proj /l:XMLFileLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=CXC.EligibilityXO.Log.xml-->
+  <!--msbuild CXC.EligibilityXO.Build.proj /l:SqlLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;BID=123;BN=2016;DS=.;IC=MSBuildLogs;SP=msbep_SqlLogger-->
+  <!--msbuild CXC.EligibilityXO.Build.proj /l:SecureFileLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=CXC.EligibilityXO.Log.txt-->
+  
+  <!-- For list down all properties -->
+  <!--msbuild CXC.EligibilityXO.Build.proj /filelogger /fileLoggerParameters:Verbosity=diag-->
+  
+  <!--Microsoft logger-->
+  <!--msbuild CXC.EligibilityXO.Build.proj /fileLogger /fileLoggerParameters:LogFile=MyLog.log;-->
+  <!--msbuild CXC.EligibilityXO.Build.proj /fl1 /fl2 /fl3 /flp2:logfile=JustErrors.log;errorsonly /flp3:logfile=JustWarnings.log;warningsonly-->
+
+  <!-- Region Import External target -->
+
+  <Import Project="CXC.EligibilityXO.BuildTasks.tasks" />
+  <Import Project="CXC.EligibilityXO.Assembly.Version.Targets"/>
+  <Import Project="CXC.EligibilityXO.DbDeploy.targets"/>
+  <Import Project="CXC.EligibilityXO.Backup.targets"/>
+  <Import Project="CXC.EligibilityXO.EmailNotification.targets"/>
+
+  <!-- EndRegion -->
+
+
+  <ItemGroup>
+    <CXCEngineSolutionFile Include="$(SourceDir)\CXC.EligibilityXO.sln"></CXCEngineSolutionFile>
+    <UpdateAssemblyVersionTarget Include="CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)\CXC.EligibilityXO.Assembly.Version.Targets;Configuration=Release"></UpdateAssemblyVersionTarget>
+  </ItemGroup>
+
+
+  <Target Name="Init">
+
+    <PropertyGroup>
+      <CurrentTargetName>Init</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <CallTarget Targets="CheckChangeLogTableExist"></CallTarget>
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="CheckChangeLogTableExist">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">CheckChangeLogTableExist</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute
+      TaskAction="ExecuteScalar"
+      UseTransaction="true"
+      Sql="select case when exists((select * from information_schema.tables where table_name = '$(DatabaseChangeLogTableName)')) then 1 else 0 end"
+      ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="IsTableExist" TaskParameter="ScalarResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+    <Message Text="Table status: $(IsTableExist)"></Message>
+
+    <!--Raise an error if changelog table is not exist into dbDeploy database-->
+    <Error Text="Please specify assembly version number in property file for this release." Condition=" '$(IsTableExist)' == '0' AND $(AssemblyBuildNumber) == '' "/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+
+  <Target Name="CreateFolderStructure">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CreateFolderStructure'">CreateFolderStructure</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <RemoveDir Directories="$(SourceDir)" Condition="$(ForceSourceOverwrite)== 'true'"/>
+
+    <MakeDir Directories="$(RootDir)" Condition="!Exists('$(RootDir)')"/>
+    <MakeDir Directories="$(SourceDir)" Condition="!Exists('$(SourceDir)')"/>
+    <MakeDir Directories="$(BackupDirForSource)" Condition="!Exists('$(BackupDirForSource)')"/>
+
+    <MakeDir Directories="$(BuildDir)" Condition="!Exists('$(BuildDir)')"/>
+    <MakeDir Directories="$(BuildDirForApp)" Condition="!Exists('$(BuildDirForApp)')"/>
+    <MakeDir Directories="$(BuildDirForDbDeploy)" Condition="!Exists('$(BuildDirForDbDeploy)')"/>
+
+    <MakeDir Directories="$(DeploymentDir)" Condition="!Exists('$(DeploymentDir)')"/>
+    <MakeDir Directories="$(BackupDirForDeployment)" Condition="!Exists('$(BackupDirForDeployment)')"/>
+    <MakeDir Directories="$(DeploymentDirForApp)" Condition="!Exists('$(DeploymentDirForApp)')"/>
+    <MakeDir Directories="$(DeploymentDirForDbDeploy)" Condition="!Exists('$(DeploymentDirForDbDeploy)')"/>
+
+    <MakeDir Directories="$(DestinationDir)" Condition="!Exists('$(DestinationDir)')"/>
+    <MakeDir Directories="$(BackupDirForDestination)" Condition="!Exists('$(BackupDirForDestination)')"/>
+
+    <MakeDir Directories="$(BackupDirForDatabase)" Condition="!Exists('$(BackupDirForDatabase)')"/>
+
+
+    <MakeDir Directories="$(BuildDirForCXCCoreSchemaChangesSql)" Condition="!Exists('$(BuildDirForCXCCoreSchemaChangesSql)')"/>
+    <MakeDir Directories="$(BuildDirForCXCCoreMetaChangesSql)" Condition="!Exists('$(BuildDirForCXCCoreMetaChangesSql)')"/>
+
+
+    <!-- Need to reomve this command once we have seperate script folder for each TPA -->
+    <MakeDir Directories="$(BuildDirForWorkflowScript)\Common" Condition="!Exists('$(BuildDirForWorkflowScript)\Common')" />
+
+
+
+    <MakeDir Directories="$(BuildDirForDbDeployOutput)" Condition="!Exists('$(BuildDirForDbDeployOutput)')"/>
+
+    <MakeDir Directories="$(TempDir)" Condition="!Exists('$(TempDir))')"/>
+
+    <CallTarget Targets="CreateTPASpecificFolderStructure"></CallTarget>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="CreateTPASpecificFolderStructure" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+
+    <PropertyGroup>
+      <TPAName>%(SolutionName.TPAName)</TPAName>
+    </PropertyGroup>
+    <Message Text="$(MergeSolution)"></Message>
+
+    <!-- Below two commands creates folder structure for each TPA  -->
+    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges')"/>
+    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges')"/>
+
+
+    <!-- Below two commands creates folder structure in build directory for each TPA  -->
+    <MakeDir Directories="$(BuildDirForWorkflowScript)\$(TPAName)" Condition="!Exists('$(BuildDirForWorkflowScript)\$(TPAName')"/>
+
+
+
+  </Target>
+
+  <Target Name="DownloadPreBuildSourceFromSVN" Condition="$(DownloadSourceCodeFromSVN) == 'true' ">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='DownloadPreBuildSourceFromSVN'">DownloadPreBuildSourceFromSVN</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <SvnCheckout  RepositoryPath="$(SVNSourceURL)"
+			            LocalPath="$(SourceDir)"
+			            UserName="$(SvnUsername)"
+			            Password="$(SvnPassword)">
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </SvnCheckout>
+
+    <Message Text="Source code downloaded from svn till revision number: $(Revision)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="InitilizeItemGroup">
+
+    <ItemGroup>
+
+      <CXCCoreSolution Include="$(SourceDir)\Core\CXC.EligibilityXO.Core.csproj"></CXCCoreSolution>
+      <CXCCoreCSharpFiles Include="$(SourceDir)\Core\**\*.cs"></CXCCoreCSharpFiles>
+      <CXCCoreAssemblyFileName Include="$(SourceDir)\Core\Bin\Release\CXC.EligibilityXO.Core.dll"></CXCCoreAssemblyFileName>
+
+
+      <CXCEngineSolution Include="$(SourceDir)\Engine\CXC.EligibilityXO.Engine.csproj"></CXCEngineSolution>
+      <CXCEngineCSharpFiles Include="$(SourceDir)\Engine\**\*.cs"></CXCEngineCSharpFiles>
+      <CXCEngineAssemblyFileName Include="$(SourceDir)\Engine\Bin\Release\CXC.EligibilityXO.Engine.exe"></CXCEngineAssemblyFileName>
+
+
+      <ABGSolutionFile Include="$(SourceDir)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"></ABGSolutionFile>
+      <ABGCSharpFiles Include="$(SourceDir)\TPA\ABG\**\*.cs"></ABGCSharpFiles>
+      <ABGAssemblyFile Include="$(SourceDir)\TPA\ABG\Bin\Release\CXC.EligibilityXO.TPA.ABG.dll"></ABGAssemblyFile>
+
+      <PrimePaySolution Include="$(SourceDir)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"></PrimePaySolution>
+      <PrimePayCSharpFiles Include="$(SourceDir)\TPA\PrimePay\**\*.cs"></PrimePayCSharpFiles>
+      <PrimePayAssemblyFile Include="$(SourceDir)\TPA\PrimePay\Bin\Release\CXC.EligibilityXO.TPA.PrimePay.dll"></PrimePayAssemblyFile>
+
+    </ItemGroup>
+
+  </Target>
+
+
+
+  <Target Name="BackupPreBuild">
+
+    <CallTarget Targets="BackupPreBuildDatabase" />
+    <CallTarget Targets="BackupPreBuildDestination" />
+    <CallTarget Targets="BackupPreBuildSource" />
+
+  </Target>
+
+  <Target Name="BuildSolutions" Condition=" $(PushCodeToDestination) != 'true' ">
+
+    <CallTarget Targets="InitilizeItemGroup"></CallTarget>
+
+    <CallTarget Targets="GetNewAssemblyVersionNumber" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+
+    <CallTarget Targets="BuildSolution" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+
+    <CallTarget Targets="CopyBuildFilesToBuildDir" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+    <CallTarget Targets="CopySqlFilesToBuildDir" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+    <CallTarget Targets="CopyWorkFlowScriptToBuildDir" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+
+    <CallTarget Targets="ConfigTransformation" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+    
+    <CallTarget Targets="GenerateSqlScriptFromDbDeploy" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+
+    <CallTarget Targets="CreateSVNLabelOnSVN" Condition="$(MSBuildLastTaskResult) == 'True'"/>
+
+  </Target>
+
+  <Target Name="GetNewAssemblyVersionNumber" Condition="$(UpdateBuildVersion)=='true' ">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">GetNewAssemblyVersionNumber</CurrentTargetName>
+    </PropertyGroup>
+
+
+    <CallTarget Targets="GetNewAssemblyVersionNumberFromDatabase" Condition="$(AssemblyBuildNumber)== '' "></CallTarget>
+    <CallTarget Targets="GetNewAssemblyVersionNumberFromPropertyFile" Condition="$(AssemblyBuildNumber) != '' " ></CallTarget>
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="GetNewAssemblyVersionNumberFromDatabase">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">GetNewAssemblyVersionNumberFromDatabase</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute
+      TaskAction="ExecuteScalar"
+      UseTransaction="true"
+      Sql="select top 1  ScriptOutput from $(DatabaseChangeLogTableName) where ScriptOutput!=''  order by CompleteDate desc"
+      ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="PreviousAssemblyVersionNumber" TaskParameter="ScalarResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+
+    <Message Text="Previous assembly version number was: $(PreviousAssemblyVersionNumber)"></Message>
+
+    <GenerateNewAssemblyVersionNumber OldAssemblyVersion="$(PreviousAssemblyVersionNumber)" Condition="'$(PreviousAssemblyVersionNumber)' != '' ">
+      <Output PropertyName="NewAssemblyVersion" TaskParameter="NewAssemblyVersion"/>
+    </GenerateNewAssemblyVersionNumber>
+
+    <Message Text="Setting new assembly version number: $(NewAssemblyVersion)"></Message>
+
+    <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(NewAssemblyVersion)" Overwrite="true"/>
+
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="GetNewAssemblyVersionNumberFromPropertyFile">
+
+    <!--NOTE: This target will get assembly version number from  environment specific props file and write it on tempAssemblyFile for next step use. -->
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">GetNewAssemblyVersionNumberFromPropertyFile</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(AssemblyBuildNumber)" Overwrite="true"/>
+
+    <Message Text="Setting new assembly version number: $(AssemblyBuildNumber)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+
+  <Target Name="BuildSolution" DependsOnTargets="BuildEligibilityXOEngine">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildSolution'">BuildSolution</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <CallTarget Targets="BuildABGSolution"></CallTarget>
+    <CallTarget Targets="BuildPrimePaySolution"></CallTarget>
+    
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+  <Target Name="BuildCXCCoreSolution" Inputs="@(CXCCoreCSharpFiles)" Outputs="@(CXCCoreAssemblyFileName)">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildCXCDataAccess'">BuildCXCDataAccess</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild Projects="@(CXCCoreSolution)"
+             Properties="@(UpdateAssemblyVersionTarget)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+  <Target Name="BuildCXCEngineSolution" Inputs="@(CXCEngineCSharpFiles)" Outputs="@(CXCEngineAssemblyFileName)">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildCXCDataAccess'">BuildCXCDataAccess</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild Projects="@(CXCEngineSolution)"
+             Properties="@(UpdateAssemblyVersionTarget)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+
+
+  <Target Name="BuildEligibilityXOEngine">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildEligibilityXOEngine'">BuildEligibilityXOEngine</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    
+    <CallTarget Targets="BuildCXCCoreSolution"></CallTarget>
+    <CallTarget Targets="BuildCXCEngineSolution"></CallTarget>
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+
+
+  </Target>
+
+  <Target Name="BuildABGSolution" Inputs="@(ABGCSharpFiles)" Outputs="@(ABGAssemblyFile)">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildABGSolution'">BuildABGSolution</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild Projects="@(ABGSolutionFile)"
+             Properties="@(UpdateAssemblyVersionTarget)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="BuildPrimePaySolution" Inputs="@(PrimePayCSharpFiles)" Outputs="@(PrimePayAssemblyFile)">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildPrimePaySolution'">BuildPrimePaySolution</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild Projects="@(PrimePaySolution)"
+             Properties="@(UpdateAssemblyVersionTarget)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="CopyBuildFilesToBuildDir">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyBuildFilesToBuildDir'">CopyBuildFilesToBuildDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <ItemGroup>
+      <BuildFiles Include="$(SourceDir)\Engine\bin\Release\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(BuildFiles)"
+			  	DestinationFolder="$(BuildDirForApp)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="CopySqlFilesToBuildDir"  Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this" DependsOnTargets="CopyCXCCoreSqlFilesToBuildDir">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopySqlFilesToBuildDir'">CopySqlFilesToBuildDir</CurrentTargetName>
+      <SourceDirForMetaChangeScript>%(SolutionName.SourceDirForMetaChangeScript)</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>%(SolutionName.SourceDirForDataChangeScript)</SourceDirForDataChangeScript>
+      <BuildDirForMetaSqlScript>%(SolutionName.BuildDirForMetaSqlScript)</BuildDirForMetaSqlScript>
+      <BuildDirForDataSqlScript>%(SolutionName.BuildDirForDataSqlScript)</BuildDirForDataSqlScript>
+    </PropertyGroup>
+
+
+     
+     <MSBuild.ExtensionPack.FileSystem.RoboCopy
+      Source="$(SourceDirForMetaChangeScript)"
+      Destination="$(BuildDirForMetaSqlScript)"
+      Files="*.*"
+      Options="/E /XO" />
+
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy
+      Source="$(SourceDirForDataChangeScript)"
+      Destination="$(BuildDirForDataSqlScript)"
+      Files="*.*"
+      Options="/E /XO" />
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="CopyCXCCoreSqlFilesToBuildDir" Condition="$(BuildEligibilityXOEngine) == 'true' ">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyCXCCoreSqlFilesToBuildDir'">CopyCXCCoreSqlFilesToBuildDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <ItemGroup>
+      <CXCCoreSchemaChangesFiles Include="$(SourceDir)\Core\Build\SchemaChanges\**\*.*" />
+      <CXCCoreMetaFiles Include="$(SourceDir)\Core\Build\MetaChanges\**\*.*" />
+    </ItemGroup>
+
+
+    <Copy SourceFiles="@(CXCCoreSchemaChangesFiles)"
+          DestinationFolder="$(BuildDirForCXCCoreSchemaChangesSql)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+
+    <Copy SourceFiles="@(CXCCoreMetaFiles)"
+          DestinationFolder="$(BuildDirForCXCCoreMetaChangesSql)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="CopyWorkFlowScriptToBuildDir"  Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyWorkFlowScriptToBuildDir'">CopyWorkFlowScriptToBuildDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <PropertyGroup>
+      <SourceDirForWorkflowFile>%(SolutionName.SourceDirForWorkflowScript)</SourceDirForWorkflowFile>
+      <BuildDirForWorkflowScript>%(SolutionName.BuildDirForWorkflowScript)</BuildDirForWorkflowScript>
+    </PropertyGroup>
+
+
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy 
+        Source="$(SourceDirForWorkflowFile)"
+        Destination="$(BuildDirForWorkflowScript)"
+        Files="*.*"
+        Options="/E /XO"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  
+
+  <Target Name="ConfigTransformation">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTransformation'">ConfigTransformation</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <CallTarget Targets="ConfigTranformationForCXCCore"></CallTarget>
+    <CallTarget Targets="ConfigTranformationForTPA"></CallTarget>
+
+    <CallTarget Targets="ConfigTranformationForDbDeploy"></CallTarget>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+
+  </Target>
+
+  <Target Name="ConfigTranformationForCXCCore" Condition="$(BuildEligibilityXOEngine) == 'true' ">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForCXCCore'">ConfigTranformationForCXCCore</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <XmlPreprocess
+      ToolPath="$(LibDir)"
+      InputFiles="$(BuildDirForApp)\config\StateParams.xml"
+      OutputFiles="$(BuildDirForApp)\config\StateParams.xml"
+      SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+      Environment="$(Environment)"
+  	  Clean="$(XmlPreprocessorCleanFile)"
+	    Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+      ToolPath="$(LibDir)"
+      InputFiles="$(BuildDirForApp)\config\CoreParams.xml"
+      OutputFiles="$(BuildDirForApp)\config\CoreParams.xml"
+      SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+      Environment="$(Environment)"
+  	  Clean="$(XmlPreprocessorCleanFile)"
+	    Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+      ToolPath="$(LibDir)"
+      InputFiles="$(BuildDirForApp)\config\DataAccess.xml"
+      OutputFiles="$(BuildDirForApp)\config\DataAccess.xml"
+      SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+      Environment="$(Environment)"
+  	  Clean="$(XmlPreprocessorCleanFile)"
+	    Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+          ToolPath="$(LibDir)"
+          InputFiles="$(BuildDirForApp)\config\AlertParams.xml"
+          OutputFiles="$(BuildDirForApp)\config\AlertParams.xml"
+          SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+          Environment="$(Environment)"
+          Clean="$(XmlPreprocessorCleanFile)"
+          Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+             ToolPath="$(LibDir)"
+             InputFiles="$(BuildDirForApp)\config\Archiver.xml"
+             OutputFiles="$(BuildDirForApp)\config\Archiver.xml"
+             SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+             Environment="$(Environment)"
+             Clean="$(XmlPreprocessorCleanFile)"
+             Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+            ToolPath="$(LibDir)"
+            InputFiles="$(BuildDirForApp)\config\Notifier.xml"
+            OutputFiles="$(BuildDirForApp)\config\Notifier.xml"
+            SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+            Environment="$(Environment)"
+            Clean="$(XmlPreprocessorCleanFile)"
+            Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <XmlPreprocess
+           ToolPath="$(LibDir)"
+           InputFiles="$(BuildDirForApp)\CXC.EligibilityXO.Engine.exe.config"
+           OutputFiles="$(BuildDirForApp)\CXC.EligibilityXO.Engine.exe.config"
+           SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+           Environment="$(Environment)"
+           Clean="$(XmlPreprocessorCleanFile)"
+           Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="ConfigTranformationForTPA" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForTPA'">ConfigTranformationForTPA</CurrentTargetName>
+      <BuildDirForStateParamXmlFile>%(SolutionName.BuildDirForStateParamXmlFile)</BuildDirForStateParamXmlFile>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <XmlPreprocess
+      ToolPath="$(LibDir)"
+      InputFiles="$(BuildDirForStateParamXmlFile)"
+      OutputFiles="$(BuildDirForStateParamXmlFile)"
+      SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+      Environment="$(Environment)"
+  	  Clean="$(XmlPreprocessorCleanFile)"
+	    Validate="$(XmlPreprocessorValidateFile)" />
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="ConfigTranformationForDbDeploy">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForDbDeploy'">ConfigTranformationForDbDeploy</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <!--Convert mssql_apply.vm.tt file to mssql_apply.vm file-->
+    <Copy SourceFiles="$(LibDir)\Resources\mssql_apply.vm.tt" DestinationFiles="$(LibDir)\Resources\mssql_apply.vm"></Copy>
+    <!--Convert mssql_undo.vm.tt file to mssql_undo.vm file-->
+    <Copy SourceFiles="$(LibDir)\Resources\mssql_undo.vm.tt" DestinationFiles="$(LibDir)\Resources\mssql_undo.vm"></Copy>
+
+    <FindAndReplace
+                  Filename="$(LibDir)\Resources\mssql_apply.vm"
+                  FindWord="USE #ELIGIBILITYXODATABASE#"
+                  ReplaceWithWord="USE [$(DatabaseName)]" />
+
+
+    <FindAndReplace
+                  Filename="$(LibDir)\Resources\mssql_apply.vm"
+                  FindWord="USE #DBDEPLOYDATABASE#"
+                  ReplaceWithWord="USE [$(dbDeployDBName)]" />
+
+
+    <FindAndReplace
+                  Filename="$(LibDir)\Resources\mssql_undo.vm"
+                  FindWord="USE #DBDEPLOYDATABASE#"
+                  ReplaceWithWord="USE [$(dbDeployDBName)]" />
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  
+
+
+  <Target Name="TPASpecificCommandFileTransform" Inputs="%(CommandFileName.Identity)" Outputs="%(CommandFileName.Identity)\Ignore_this">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TPASpecificCommandFileTransform'">TPASpecificCommandFileTransform</CurrentTargetName>
+      <CommandFileName>@(CommandFileName)</CommandFileName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <CommandFileTransformation SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+                               TabName="CommandSettings"
+                               Environment ="$(Environment)"
+                               InputFiles="$(CommandFileName)"
+                               OutputFiles="$(CommandFileName)"
+                               VariableColumnName="$(PropertiesColumnInSettingSpreadsheet)" >
+      <Output TaskParameter="ErrorMessage" PropertyName="ErrorMessage" />
+    </CommandFileTransformation>
+
+    <Message Text="$(ErrorMessage)"></Message>
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="CreateSVNLabelOnSVN" Condition="$(CreateSVNLabel) == 'True'">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CreateSVNLabelOnSVN'">CreateSVNLabelOnSVN</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <ReadLinesFromFile File="@(GeneratedAssemblyFileName)">
+      <Output TaskParameter="Lines" PropertyName="VersionNumber" />
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <SvnDestinationPath Condition="'$(VersionNumber)' != '' ">$(SVNTagURL)/$(Environment)_$(CurrentDateTime)_$(VersionNumber)</SvnDestinationPath>
+      <SvnDestinationPath Condition="'$(VersionNumber)' == '' ">$(SVNTagURL)/$(Environment)_$(CurrentDateTime)</SvnDestinationPath>
+    </PropertyGroup>
+
+    <SvnCopy SourcePath="$(SVNSourceURL)"
+      DestinationPath="$(SvnDestinationPath)"
+      Message="$(CurrentDate)_$(VersionNumber)"
+      Username="$(SvnUsername)" password="$(SvnPassword)"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+
+
+  <Target Name="PostBuild" Condition=" $(PushCodeToDestination) != 'true' ">
+
+    <CallTarget Targets="CopyBuildFilesToDeploymentDir"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
+    <CallTarget Targets="CopyDbDeployOutputFilesToDeploymentDir" Condition="$(MSBuildLastTaskResult) == 'True' "/>
+    <CallTarget Targets="CopyWorkflowScriptsToDeploymentDir"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
+    <CallTarget Targets="BackupPostBuildDeployment"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
+
+  </Target>
+
+  <Target Name="CopyBuildFilesToDeploymentDir">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyBuildFilesToDeploymentDir'">CopyBuildFilesToDeploymentDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <Message Text = "Start copying files from $(BuildDirForApp) to $(DeploymentDirForApp)"></Message>
+
+     <MSBuild.ExtensionPack.FileSystem.RoboCopy
+      Source="$(BuildDirForApp)"
+      Destination="$(DeploymentDirForApp)"
+      Files="*.*"
+      Options="/E /XO" />
+
+    <Message Text = "Completed copying files from $(BuildDirForApp) to $(DeploymentDirForApp)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="CopyDbDeployOutputFilesToDeploymentDir">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyDbDeployOutputFilesToDeploymentDir'">CopyDbDeployOutputFilesToDeploymentDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <ItemGroup>
+      <DbDeployFiles Include="$(BuildDirForDbDeployOutput)\*.*" />
+    </ItemGroup>
+
+    <Message Text = "Start copying files from $(BuildDirForDbDeployOutput) to $(DeploymentDirForDbDeploy)"></Message>
+
+    <Copy SourceFiles="@(DbDeployFiles)"
+			  	DestinationFolder="$(DeploymentDirForDbDeploy)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+    <Message Text = "Completed copying files from $(BuildDirForDbDeployOutput) to $(DeploymentDirForDbDeploy)"></Message>
+
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  <Target Name="CopyWorkflowScriptsToDeploymentDir" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyWorkflowScriptsToDeploymentDir'">CopyWorkflowScriptsToDeploymentDir</CurrentTargetName>
+      <BuildDirForWorkflowScript>%(SolutionName.BuildDirForWorkflowScript)</BuildDirForWorkflowScript>
+      <!--<CommandAndSqlFilesDeploymentDir>%(SolutionName.CommandAndSqlFilesDeploymentDir)</CommandAndSqlFilesDeploymentDir>-->
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+     <MSBuild.ExtensionPack.FileSystem.RoboCopy
+      Source="$(BuildDirForWorkflowScript)"
+      Destination="$(DeploymentDirForApp)"
+      Files="*.*"
+      Options="/E /XO"/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+  
+
+  <Target Name="DeployBuildToDestination" Condition=" $(PushCodeToDestination) == 'true' or $(PushCodeToDestination) == '' " >
+
+    <CallTarget Targets="CopyBuildFilesToDestinationDir"  />
+
+    <CallTarget Targets="UpdateDestinationDatabase" Condition="$(MSBuildLastTaskResult) == 'True' " />
+
+    <CallTarget Targets="SaveAssemblyVersionInDestinationDatabase" Condition="$(MSBuildLastTaskResult) == 'True' " />
+
+
+  </Target>
+
+  <Target Name="CopyBuildFilesToDestinationDir">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyBuildFilesToDestinationDir'">CopyBuildFilesToDestinationDir</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <Message Text = "Start copying files from $(DeploymentDirForApp) to $(DestinationDir)"></Message>
+
+    <ItemGroup>
+      <DeploymentAppDir Include="$(DeploymentDirForApp)\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(DeploymentAppDir)"
+			  	DestinationFolder="$(DestinationDir)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+
+
+    <Message Text = "Completed copying files from $(DeploymentDirForApp) to $(DestinationDir)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  <Target Name="SaveAssemblyVersionInDestinationDatabase" Condition="Exists(@(GeneratedAssemblyFileName))">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='SaveAssemblyVersionInDestinationDatabase'">SaveAssemblyVersionInDestinationDatabase</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute
+      TaskAction="ExecuteScalar"
+      UseTransaction="false"
+      Sql="select max(ScriptNumber) from $(DatabaseChangeLogTableName) where Folder='Dummy' "
+      ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="MaxScriptNumberFromDbDeployDatabase" TaskParameter="ScalarResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+
+
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="$(MaxScriptNumberFromDbDeployDatabase);1">
+      <Output PropertyName="NextScriptNumberForDbDeployDatabase" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
+
+    <ReadLinesFromFile File="@(GeneratedAssemblyFileName)">
+      <Output TaskParameter="Lines" PropertyName="AssemblyVersionNumber" />
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <CommandLineSqlForInsertNewAssemblyVersionNumber>Use $(dbDeployDBName) INSERT INTO $(DatabaseChangeLogTableName) VALUES('Dummy', $(NextScriptNumberForDbDeployDatabase), 'DummyScript', GETDATE(), GETDATE(),'dbo','1',  '$(AssemblyVersionNumber)' )</CommandLineSqlForInsertNewAssemblyVersionNumber>
+    </PropertyGroup>
+
+    <MSBuild.ExtensionPack.SqlServer.SqlCmd
+      TaskAction="Execute"
+      Server="$(SqlServerName)"
+      Database="$(dbDeployDBName)"
+      CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
+      Condition="$(IsSqlWindowsAuthentication)=='true'"/>
+
+
+
+    <MSBuild.ExtensionPack.SqlServer.SqlCmd
+      TaskAction="Execute"
+      Server="$(SqlServerName)"
+      Database="$(dbDeployDBName)"
+      LogOn="$(SqlServerUserName)"
+      Password="$(SqlServerPassword)"
+      CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
+      Condition="$(IsSqlWindowsAuthentication)=='false'"/>
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+
+  <Target Name="CleanTempFiles">
+
+    <RemoveDir Directories="$(TempDir)" />
+
+    <ItemGroup>
+      <DeleteTempErrorLog Include="$(TempDirForLog)/**/*.*" Exclude="$(ErrorLogFileName)" />
+    </ItemGroup>
+
+    <Delete Files="@(DeleteTempErrorLog)" ContinueOnError="true" />
+
+
+  </Target>
+
+
+  <Target Name="Build">
+
+    <CallTarget Targets="Init"></CallTarget>
+
+    <CallTarget Targets="CreateFolderStructure" Condition="$(PushCodeToDestination) != 'true' " />
+
+    <CallTarget Targets="DownloadPreBuildSourceFromSVN" Condition="$(MSBuildLastTaskResult) == 'True' and $(PushCodeToDestination) != 'true' "/>
+
+    <CallTarget Targets="BackupPreBuild" Condition="$(MSBuildLastTaskResult) == 'True' and $(PushCodeToDestination) != 'true' "></CallTarget>
+
+    <CallTarget Targets="BuildSolutions"></CallTarget>
+
+    <CallTarget Targets="PostBuild"></CallTarget>
+
+    <CallTarget Targets="DeployBuildToDestination"></CallTarget>
+
+  </Target>
+
+
+  <Target Name="Run">
+
+    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /fl1 /fl2 /flp1:logfile=$(LogFileName) /flp2:logfile=$(ErrorLogFileName);errorsonly;warningsonly "/>
+
+    <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(PushCodeToDestination) == 'true' or $(PushCodeToDestination) == '') " />
+
+
+  </Target>
+
+
+</Project>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="CXC.EligibilityXO.props" />
+  <Import Project="$(MSBuildCommunityTaskstargets)"/>
+  <Import Project="$(MSBuildExtensionPacktargets)" Condition="Exists('$(MSBuildExtensionPacktargets)')"/>
+
+
+  <ItemGroup>
+    <AssemblyInfoFile Include="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" />
+    <GeneratedAssemblyFileName Include="$(TempAssemblyFile)"/>
+  </ItemGroup>
+
+
+
+
+
+  <Target Name="BeforeCompile"
+          Inputs="@(Compile)"
+          Outputs="@(IntermediateAssembly)"
+          Condition="$(UpdateBuildVersion)=='true'">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BeforeCompile'">BeforeCompile</CurrentTargetName>
+    </PropertyGroup>
+
+    <CallTarget Targets="SetNewAssemblyVersionNumber"></CallTarget>
+    <CallTarget Targets="CommitAssemblyInfoFileInSVN" Condition="$(CheckInAssemblyInfo)=='true'"></CallTarget>
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+
+  <Target Name="SetNewAssemblyVersionNumber">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='SetNewAssemblyVersionNumber'">SetNewAssemblyVersionNumber</CurrentTargetName>
+    </PropertyGroup>
+
+    <ReadLinesFromFile File="@(GeneratedAssemblyFileName)">
+      <Output TaskParameter="Lines" PropertyName="VersionNumber" />
+    </ReadLinesFromFile>
+
+    <FileUpdate Files="@(AssemblyInfoFile)"
+                Regex='(AssemblyVersion\("\d+\.\d+\.\d+\.)\d+("\))'
+                ReplacementText="AssemblyVersion(&quot;$(VersionNumber)&quot;)" />
+
+
+    <FileUpdate Files="@(AssemblyInfoFile)"
+            Regex='(AssemblyFileVersion\("\d+\.\d+\.\d+\.)\d+("\))'
+            ReplacementText="AssemblyFileVersion(&quot;$(VersionNumber)&quot;)" />
+
+
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+
+  <Target Name="CommitAssemblyInfoFileInSVN">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='CommitAssemblyInfoFileInSVN'">CommitAssemblyInfoFileInSVN</CurrentTargetName>
+    </PropertyGroup>
+
+    <ReadLinesFromFile File="@(GeneratedAssemblyFileName)">
+      <Output TaskParameter="Lines" PropertyName="VersionNumber" />
+    </ReadLinesFromFile>
+
+    <SvnCommit Targets="@(AssemblyInfoFile)" Message="Set assembly version number: $(VersionNumber)"
+     Username="$(SvnUsername)" Password="$(SvnPassword)">
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </SvnCommit>
+
+    <Message Text="@(AssemblyInfoFile) has been committed with revision id: $(Revision)"></Message>
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+
+</Project>

@@ -1,0 +1,168 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  
+  
+  <PropertyGroup>
+    <BackupPreBuildDatabaseFile>$(BackupDirForDatabase)\$(DatabaseName)_PreBuild_$(CurrentDateTime).bak</BackupPreBuildDatabaseFile>
+    <BackupPreBuildSourceFile>$(BackupDirForSource)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildSourceFile>
+    <BackupPostBuildDeploymentFile>$(BackupDirForDeployment)\EligibilityXO_PostBuild_$(CurrentDateTime).zip</BackupPostBuildDeploymentFile>
+    <BackupPreBuildDestinationFile>$(BackupDirForDestination)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildDestinationFile>
+  </PropertyGroup>
+
+  
+  <Target Name="BackupPreBuildDatabase" Condition="$(BackupDatabase) == 'true' ">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDatabase'">BackupPreBuildDatabase</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <CallTarget Targets="BackupPreBuildDatabaseForSqlServer2008Version" Condition="$(SqlServerVersion) == '2008' "/>
+    <CallTarget Targets="BackupPreBuildDatabaseForSqlServer2012Version" Condition="$(SqlServerVersion) == '2012' "/>
+    <CallTarget Targets="BackupPreBuildDatabaseForSqlServer2014Version" Condition="$(SqlServerVersion) == '2014' "/>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+   
+  </Target>
+
+
+  <Target Name="BackupPreBuildDatabaseForSqlServer2008Version">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDatabaseForSqlServer2008Version'">BackupPreBuildDatabaseForSqlServer2008Version</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild.ExtensionPack.Sql2008.Database
+      TaskAction="Backup"
+      DatabaseItem="$(DatabaseName)"
+      MachineName="$(SqlServerName)"
+      UserName="$(SqlServerUserName)"
+      UserPassword="$(SqlServerPassword)"
+      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+    <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+    
+    
+  </Target>
+
+  
+  <Target Name="BackupPreBuildDatabaseForSqlServer2012Version">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDatabaseForSqlServer2012Version'">BackupPreBuildDatabaseForSqlServer2012Version</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild.ExtensionPack.Sql2012.Database
+      TaskAction="Backup"
+      DatabaseItem="$(DatabaseName)"
+      MachineName="$(SqlServerName)"
+      UserName="$(SqlServerUserName)"
+      UserPassword="$(SqlServerPassword)"
+      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+    <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+
+  </Target>
+
+  
+  <Target Name="BackupPreBuildDatabaseForSqlServer2014Version">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDatabaseForSqlServer2014Version'">BackupPreBuildDatabaseForSqlServer2014Version</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <MSBuild.ExtensionPack.Sql2014.Database
+      TaskAction="Backup"
+      DatabaseItem="$(DatabaseName)"
+      MachineName="$(SqlServerName)"
+      UserName="$(SqlServerUserName)"
+      UserPassword="$(SqlServerPassword)"
+      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+    <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+
+  </Target>
+
+
+  <Target Name="BackupPreBuildSource" Condition="$(BackupSourceCode) == 'true'">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildSource'">BackupPreBuildSource</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <!-- Create a zip file based on the FilesToZip collection -->
+    <MSBuild.ExtensionPack.Compression.Zip
+      TaskAction="Create"
+      CompressPath="$(SourceDir)"
+      ZipFileName="$(BackupPreBuildSourceFile)"/>
+    <Message Text="Source code backup has been sucessfully completed at this location: $(BackupPreBuildSourceFile)"></Message>
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+    
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+  <Target Name="BackupPostBuildDeployment">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPostBuildDeployment'">BackupPostBuildDeployment</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="Target DatabaseBackupCompiledAssembliesBackup has been started." />
+    <!-- Create a zip file based on the FilesToZip collection -->
+    <MSBuild.ExtensionPack.Compression.Zip
+      TaskAction="Create"
+      CompressPath="$(DeploymentDir)"
+      ZipFileName="$(BackupPostBuildDeploymentFile)"/>
+    <Message Text="Build backup has been sucessfully completed at this location: $(BackupPostBuildDeploymentFile)"></Message>
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+  
+  <Target Name="BackupPreBuildDestination">
+
+    <PropertyGroup>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDestination'">BackupPreBuildDestination</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    
+    <MSBuild.ExtensionPack.Compression.Zip
+      TaskAction="Create"
+      CompressPath="$(DestinationDir)"
+      ZipFileName="$(BackupPreBuildDestinationFile)"/>
+    
+    <Message Text="$(CurrentTargetName) has been sucessfully completed at this location: $(BackupPreBuildDestinationFile)"></Message>
+    
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+    
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+  </Target>
+
+</Project>

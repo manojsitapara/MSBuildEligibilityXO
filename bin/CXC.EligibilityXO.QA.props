@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
+
+  <PropertyGroup>
+
+    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
+    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>
+
+    <!-- MSBuild script folder structure settings -->
+
+    <!-- Specify the root directory to create msbuild script folder structure -->
+    <RootDir>E:\MyMSBuildTesting\EligibilitXO\QA</RootDir>
+
+    <!-- Specify the path to copy build code on server -->
+    <DestinationDir>E:\MyMSBuildTesting\EligibilitXO\QA\QAServer</DestinationDir>
+
+    <!-- To download source code from SVN, set value to true else false -->
+    <DownloadSourceCodeFromSVN>true</DownloadSourceCodeFromSVN>
+    <!--Set value true to take source code backup else false -->
+    <BackupSourceCode>false</BackupSourceCode>
+    <!--Set value true to overwrite source code if any changes else false -->
+    <ForceSourceOverwrite>false</ForceSourceOverwrite>
+    <!-- To build CXC Engine solution, set value to true -->
+    <BuildEligibilityXOEngine>true</BuildEligibilityXOEngine>
+    <!-- To build ABG solution, set value to true -->
+    <BuildABG>true</BuildABG>
+    <!-- To build PrimePay solution, set value to true -->
+    <BuildPrimePay>true</BuildPrimePay>
+    <!--Set value true to take database backup else false -->
+    <BackupDatabase>true</BackupDatabase>
+    <!-- Set UpdateBuildVersion value true to update build version number else set false -->
+    <UpdateBuildVersion>true</UpdateBuildVersion>
+    <!--Set value true to check in change assembly comment back to SVN else set false -->
+    <CheckInAssemblyInfo>false</CheckInAssemblyInfo>
+    <!--Set value true to create svn lable under svn tag branch-->
+    <CreateSVNLabel>true</CreateSVNLabel>
+    <!--Set value true to send error email notification (e.g. on failing build script etc.) -->
+    <SendEmailNotification>true</SendEmailNotification>
+
+
+
+    <!-- Build code settings-->
+    <!--Set value to true to push build code on destination-->
+    <!--Set value to false to just build code on deployment -->
+    <!--Set value to empty to execute normal msbuild workflow -->
+    <PushCodeToDestination></PushCodeToDestination>
+
+
+    <!--Sql server settings -->
+
+    <!--Set value to true, if windows authentication required-->
+    <IsSqlWindowsAuthentication>true</IsSqlWindowsAuthentication>
+    <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
+    <SqlServerVersion>2012</SqlServerVersion>
+    <!--Specify Sql server name-->
+    <SqlServerName>.</SqlServerName>
+
+    <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false -->
+    <SqlServerUserName>sa</SqlServerUserName>
+    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false  -->
+    <SqlServerPassword>sa123</SqlServerPassword>
+
+    <!--specify database name -->
+    <DatabaseName>MsBuildEligibility</DatabaseName>
+
+
+
+    <!--Specify TO email address to send error email notification -->
+    <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
+
+    <!--Specify assembly build number needs to set (e.g. 2016.10.01.0) -->
+    <AssemblyBuildNumber></AssemblyBuildNumber>
+
+  </PropertyGroup>
+
+</Project>
