@@ -68,7 +68,7 @@
 
 
     <dbDeployDBName>MsBuildDbDeploy</dbDeployDBName>
-    <DatabaseChangeLogTableName>Changelog</DatabaseChangeLogTableName>
+    <DatabaseChangeLogTableName>EligibilityChangeLog</DatabaseChangeLogTableName>
     <DeploymentDirForApp>$(DeploymentDir)\$(AppFolderName)</DeploymentDirForApp>
     <DeploymentDirForDbDeploy>$(DeploymentDir)\$(DbDeployScriptFolderName)</DeploymentDirForDbDeploy>
     

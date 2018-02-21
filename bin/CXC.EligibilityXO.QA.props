@@ -31,7 +31,7 @@
     <!-- Set UpdateBuildVersion value true to update build version number else set false -->
     <UpdateBuildVersion>true</UpdateBuildVersion>
     <!--Set value true to check in change assembly comment back to SVN else set false -->
-    <CheckInAssemblyInfo>false</CheckInAssemblyInfo>
+    <CheckInAssemblyInfo>true</CheckInAssemblyInfo>
     <!--Set value true to create svn lable under svn tag branch-->
     <CreateSVNLabel>true</CreateSVNLabel>
     <!--Set value true to send error email notification (e.g. on failing build script etc.) -->
