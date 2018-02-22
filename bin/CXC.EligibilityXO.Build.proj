@@ -730,7 +730,7 @@
 
     <SvnCopy SourcePath="$(SVNSourceURL)"
       DestinationPath="$(SvnDestinationPath)"
-      Message="$(CurrentDate)_$(VersionNumber)"
+      Message="Manoj_$(CurrentDate)_$(VersionNumber)"
       Username="$(SvnUsername)" password="$(SvnPassword)"/>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
