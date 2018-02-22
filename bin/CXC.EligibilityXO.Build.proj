@@ -681,35 +681,6 @@
 
   </Target>
 
-  
-
-
-  <Target Name="TPASpecificCommandFileTransform" Inputs="%(CommandFileName.Identity)" Outputs="%(CommandFileName.Identity)\Ignore_this">
-
-    <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TPASpecificCommandFileTransform'">TPASpecificCommandFileTransform</CurrentTargetName>
-      <CommandFileName>@(CommandFileName)</CommandFileName>
-    </PropertyGroup>
-
-    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
-
-    <CommandFileTransformation SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
-                               TabName="CommandSettings"
-                               Environment ="$(Environment)"
-                               InputFiles="$(CommandFileName)"
-                               OutputFiles="$(CommandFileName)"
-                               VariableColumnName="$(PropertiesColumnInSettingSpreadsheet)" >
-      <Output TaskParameter="ErrorMessage" PropertyName="ErrorMessage" />
-    </CommandFileTransformation>
-
-    <Message Text="$(ErrorMessage)"></Message>
-
-
-    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
-
-    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
-
-  </Target>
 
   <Target Name="CreateSVNLabelOnSVN" Condition="$(CreateSVNLabel) == 'True'">
 

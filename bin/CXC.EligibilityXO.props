@@ -106,7 +106,6 @@
     <MicrosoftBuildTasks>..\lib\Microsoft.Build.Tasks.v4.0.dll</MicrosoftBuildTasks>
     <DbDeployTemplateDir>..\lib\Resources</DbDeployTemplateDir>
     <ConfigValuesSpreadsheetFileLocation>$(MSBuildThisFileDirectory)..\SettingsSpreadsheet\SettingsSpreadsheet.xls</ConfigValuesSpreadsheetFileLocation>
-    <CommandFileTransformationLibrary>..\lib\CXC.CommandFileTransformation.dll</CommandFileTransformationLibrary>
     <XmlPreProcessorLibrary>..\lib\XmlPreprocess.MSBuildTasks.dll</XmlPreProcessorLibrary>
     <LibDir>$(MSBuildThisFileDirectory)..\lib</LibDir>
 

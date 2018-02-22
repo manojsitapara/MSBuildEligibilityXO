@@ -3,16 +3,18 @@
 
   <PropertyGroup>
 
-    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
-    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>
+    <!--<SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
+    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>-->
+    <SVNSourceURL>https://svn.cxcnetwork.com/svn/EligibilityXO/branches/TestBuild/CXC</SVNSourceURL>
+    <SVNTagURL>https://svn.cxcnetwork.com/svn/EligibilityXO/tags</SVNTagURL>
 
     <!-- MSBuild script folder structure settings -->
 
     <!-- Specify the root directory to create msbuild script folder structure -->
-    <RootDir>E:\MyMSBuildTesting\EligibilitXO\QA</RootDir>
+    <RootDir>E:\MSBuildTesting_fromCXCSVN\QA</RootDir>
 
     <!-- Specify the path to push build on target server -->
-    <DestinationDir>E:\MyMSBuildTesting\EligibilitXO\QA\QAServer</DestinationDir>
+    <DestinationDir>E:\MSBuildTesting_fromCXCSVN\QA\QAServer</DestinationDir>
 
     <!-- To download source code from SVN, set value to true else false -->
     <DownloadSourceCodeFromSVN>true</DownloadSourceCodeFromSVN>
@@ -33,7 +35,7 @@
     <!--Set value true to check in change assembly comment back to SVN else set false -->
     <CheckInAssemblyInfo>true</CheckInAssemblyInfo>
     <!--Set value true to create svn lable under svn tag branch-->
-    <CreateSVNLabel>true</CreateSVNLabel>
+    <CreateSVNLabel>false</CreateSVNLabel>
     <!--Set value true to send error email notification (e.g. on failing build script etc.) -->
     <SendEmailNotification>true</SendEmailNotification>
 
@@ -43,7 +45,7 @@
     <!--Set value to onlypush to push build  on destination-->
     <!--Set value to onlybuild to just build  on deployment -->
     <!--Set value to empty to execute normal msbuild workflow, Build & Push -->
-    <OnlyBuildOrOnlyPush>onlypush</OnlyBuildOrOnlyPush>
+    <OnlyBuildOrOnlyPush></OnlyBuildOrOnlyPush>
 
 
     <!--Sql server settings -->
