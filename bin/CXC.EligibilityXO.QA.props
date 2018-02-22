@@ -11,7 +11,7 @@
     <!-- Specify the root directory to create msbuild script folder structure -->
     <RootDir>E:\MyMSBuildTesting\EligibilitXO\QA</RootDir>
 
-    <!-- Specify the path to copy build code on server -->
+    <!-- Specify the path to push build on target server -->
     <DestinationDir>E:\MyMSBuildTesting\EligibilitXO\QA\QAServer</DestinationDir>
 
     <!-- To download source code from SVN, set value to true else false -->
@@ -40,10 +40,10 @@
 
 
     <!-- Build code settings-->
-    <!--Set value to true to push build code on destination-->
-    <!--Set value to false to just build code on deployment -->
-    <!--Set value to empty to execute normal msbuild workflow -->
-    <PushCodeToDestination></PushCodeToDestination>
+    <!--Set value to onlypush to push build  on destination-->
+    <!--Set value to onlybuild to just build  on deployment -->
+    <!--Set value to empty to execute normal msbuild workflow, Build & Push -->
+    <OnlyBuildOrOnlyPush>onlypush</OnlyBuildOrOnlyPush>
 
 
     <!--Sql server settings -->
