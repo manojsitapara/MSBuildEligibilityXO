@@ -33,6 +33,8 @@
 
     <!-- Specify the path of source code -->
     <SourceDir>$(RootDir)\Source</SourceDir>
+    <!-- Specify the path of source code -->
+    <RootDirForSurceCode>$(SourceDir)\CXC\EligibilityXO</RootDirForSurceCode>
     <!-- Specify the path to save build code -->
     <BuildDir>$(RootDir)\Build</BuildDir>
    
@@ -117,16 +119,16 @@
 
   <ItemGroup>
 
-    <SolutionName Include="$(SourceDir)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"  Condition="$(BuildABG)=='true' ">
+    <SolutionName Include="$(RootDirForSurceCode)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"  Condition="$(BuildABG)=='true' ">
       
       <TPAName>ABG</TPAName>
 
-      <SourceDirForMetaChangeScript>$(SourceDir)\TPA\ABG\Build\MetaChanges</SourceDirForMetaChangeScript>
-      <SourceDirForDataChangeScript>$(SourceDir)\TPA\ABG\Build\DataChanges</SourceDirForDataChangeScript>
-      <SourceDirForWorkflowScript>$(SourceDir)\TPA\ABG\Scripts</SourceDirForWorkflowScript>
+      <SourceDirForMetaChangeScript>$(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>$(RootDirForSurceCode)\TPA\ABG\Build\DataChanges</SourceDirForDataChangeScript>
+      <SourceDirForWorkflowScript>$(RootDirForSurceCode)\TPA\ABG\Scripts</SourceDirForWorkflowScript>
       
-      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\1.ABG_DataChanges</BuildDirForDataSqlScript>
-      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\2.ABG_MetaChanges</BuildDirForMetaSqlScript>
+      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges</BuildDirForMetaSqlScript>
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
@@ -134,16 +136,17 @@
     </SolutionName>
 
     
-    <SolutionName Include="$(SourceDir)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
+    <SolutionName Include="$(RootDirForSurceCode)\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
       
       <TPAName>PrimePay</TPAName>
 
-      <SourceDirForMetaChangeScript>$(SourceDir)\TPA\PrimePay\Build\MetaChanges</SourceDirForMetaChangeScript>
-      <SourceDirForDataChangeScript>$(SourceDir)\TPA\PrimePay\Build\DataChanges</SourceDirForDataChangeScript>
-      <SourceDirForWorkflowScript>$(SourceDir)\TPA\PrimePay\Scripts</SourceDirForWorkflowScript>
+      <SourceDirForMetaChangeScript>$(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>$(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges</SourceDirForDataChangeScript>
+      <SourceDirForWorkflowScript>$(RootDirForSurceCode)\TPA\PrimePay\Scripts</SourceDirForWorkflowScript>
 
-      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\2.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
-      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\1.PrimePay_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
+      
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>

@@ -52,7 +52,7 @@
 
     <!--Set value to true, if windows authentication required-->
     <IsSqlWindowsAuthentication>true</IsSqlWindowsAuthentication>
-    <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
+    <!--Specify Sql server Version e.g. 2008, 2012 or 2014 so as to use appropriate msbuild.extension.sqlpack -->
     <SqlServerVersion>2012</SqlServerVersion>
     <!--Specify Sql server name-->
     <SqlServerName>LAPTOP-4857HARD\PRODUCTION</SqlServerName>

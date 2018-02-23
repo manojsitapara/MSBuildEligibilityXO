@@ -25,7 +25,7 @@
 
 
   <ItemGroup>
-    <CXCEngineSolutionFile Include="$(SourceDir)\CXC.EligibilityXO.sln"></CXCEngineSolutionFile>
+    <CXCEngineSolutionFile Include="$(RootDirForSurceCode)\CXC.EligibilityXO.sln"></CXCEngineSolutionFile>
     <UpdateAssemblyVersionTarget Include="CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)\CXC.EligibilityXO.Assembly.Version.Targets;Configuration=Release"></UpdateAssemblyVersionTarget>
   </ItemGroup>
 
@@ -135,8 +135,8 @@
     <Message Text="$(MergeSolution)"></Message>
 
     <!-- Below two commands creates folder structure for each TPA  -->
-    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges')"/>
-    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges')"/>
+    <!--<MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\1.$(TPAName)_MetaChanges')"/>
+    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\2.$(TPAName)_DataChanges')"/>-->
 
 
     <!-- Below two commands creates folder structure in build directory for each TPA  -->
@@ -173,23 +173,23 @@
 
     <ItemGroup>
 
-      <CXCCoreSolution Include="$(SourceDir)\Core\CXC.EligibilityXO.Core.csproj"></CXCCoreSolution>
-      <CXCCoreCSharpFiles Include="$(SourceDir)\Core\**\*.cs"></CXCCoreCSharpFiles>
-      <CXCCoreAssemblyFileName Include="$(SourceDir)\Core\Bin\Release\CXC.EligibilityXO.Core.dll"></CXCCoreAssemblyFileName>
+      <CXCCoreSolution Include="$(RootDirForSurceCode)\Core\CXC.EligibilityXO.Core.csproj"></CXCCoreSolution>
+      <CXCCoreCSharpFiles Include="$(RootDirForSurceCode)\Core\**\*.cs"></CXCCoreCSharpFiles>
+      <CXCCoreAssemblyFileName Include="$(RootDirForSurceCode)\Core\Bin\Release\CXC.EligibilityXO.Core.dll"></CXCCoreAssemblyFileName>
 
 
-      <CXCEngineSolution Include="$(SourceDir)\Engine\CXC.EligibilityXO.Engine.csproj"></CXCEngineSolution>
-      <CXCEngineCSharpFiles Include="$(SourceDir)\Engine\**\*.cs"></CXCEngineCSharpFiles>
-      <CXCEngineAssemblyFileName Include="$(SourceDir)\Engine\Bin\Release\CXC.EligibilityXO.Engine.exe"></CXCEngineAssemblyFileName>
+      <CXCEngineSolution Include="$(RootDirForSurceCode)\Engine\CXC.EligibilityXO.Engine.csproj"></CXCEngineSolution>
+      <CXCEngineCSharpFiles Include="$(RootDirForSurceCode)\Engine\**\*.cs"></CXCEngineCSharpFiles>
+      <CXCEngineAssemblyFileName Include="$(RootDirForSurceCode)\Engine\Bin\Release\CXC.EligibilityXO.Engine.exe"></CXCEngineAssemblyFileName>
 
 
-      <ABGSolutionFile Include="$(SourceDir)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"></ABGSolutionFile>
-      <ABGCSharpFiles Include="$(SourceDir)\TPA\ABG\**\*.cs"></ABGCSharpFiles>
-      <ABGAssemblyFile Include="$(SourceDir)\TPA\ABG\Bin\Release\CXC.EligibilityXO.TPA.ABG.dll"></ABGAssemblyFile>
+      <ABGSolutionFile Include="$(RootDirForSurceCode)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"></ABGSolutionFile>
+      <ABGCSharpFiles Include="$(RootDirForSurceCode)\TPA\ABG\**\*.cs"></ABGCSharpFiles>
+      <ABGAssemblyFile Include="$(RootDirForSurceCode)\TPA\ABG\Bin\Release\CXC.EligibilityXO.TPA.ABG.dll"></ABGAssemblyFile>
 
-      <PrimePaySolution Include="$(SourceDir)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"></PrimePaySolution>
-      <PrimePayCSharpFiles Include="$(SourceDir)\TPA\PrimePay\**\*.cs"></PrimePayCSharpFiles>
-      <PrimePayAssemblyFile Include="$(SourceDir)\TPA\PrimePay\Bin\Release\CXC.EligibilityXO.TPA.PrimePay.dll"></PrimePayAssemblyFile>
+      <PrimePaySolution Include="$(RootDirForSurceCode)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"></PrimePaySolution>
+      <PrimePayCSharpFiles Include="$(RootDirForSurceCode)\TPA\PrimePay\**\*.cs"></PrimePayCSharpFiles>
+      <PrimePayAssemblyFile Include="$(RootDirForSurceCode)\TPA\PrimePay\Bin\Release\CXC.EligibilityXO.TPA.PrimePay.dll"></PrimePayAssemblyFile>
 
     </ItemGroup>
 
@@ -415,7 +415,7 @@
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
     <ItemGroup>
-      <BuildFiles Include="$(SourceDir)\Engine\bin\Release\**\*.*" />
+      <BuildFiles Include="$(RootDirForSurceCode)\Engine\bin\Release\**\*.*" />
     </ItemGroup>
 
     <Copy SourceFiles="@(BuildFiles)"
@@ -467,8 +467,8 @@
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
     <ItemGroup>
-      <CXCCoreSchemaChangesFiles Include="$(SourceDir)\Core\Build\SchemaChanges\**\*.*" />
-      <CXCCoreMetaFiles Include="$(SourceDir)\Core\Build\MetaChanges\**\*.*" />
+      <CXCCoreSchemaChangesFiles Include="$(RootDirForSurceCode)\Core\Build\SchemaChanges\**\*.*" />
+      <CXCCoreMetaFiles Include="$(RootDirForSurceCode)\Core\Build\MetaChanges\**\*.*" />
     </ItemGroup>
 
 
