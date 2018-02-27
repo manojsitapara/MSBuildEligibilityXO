@@ -661,7 +661,7 @@
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_apply.vm"
                   FindWord="USE #ELIGIBILITYXODATABASE#"
-                  ReplaceWithWord="USE [$(DatabaseName)]" />
+                  ReplaceWithWord="USE [$(ApplicationDatabaseName)]" />
 
 
     <FindAndReplace
