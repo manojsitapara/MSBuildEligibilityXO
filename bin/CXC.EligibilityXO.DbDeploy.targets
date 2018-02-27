@@ -57,12 +57,12 @@
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
     <Message Text="@(dbDeployFileName)"></Message>
-    <Message Text="Executing change script ($(SqlCmdInputFile)) on $(dbDeployDBName) ..."/>
+    <Message Text="Executing change script ($(SqlCmdInputFile)) on $(DbDeployDatabaseName) ..."/>
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
       Server="$(SqlServerName)"
-      Database="$(dbDeployDBName)"
+      Database="$(DbDeployDatabaseName)"
       LogOn="$(SqlServerUserName)"
       Password="$(SqlServerPassword)"
       InputFiles="$(SqlCmdInputFile)"
@@ -71,7 +71,7 @@
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
       Server="$(SqlServerName)"
-      Database="$(dbDeployDBName)"
+      Database="$(DbDeployDatabaseName)"
       InputFiles="$(SqlCmdInputFile)"
       Condition="$(IsSqlWindowsAuthentication)=='true'"/>
 

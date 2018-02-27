@@ -69,7 +69,7 @@
     <BuildDirForDbDeployOutput>$(BuildDir)\$(DbDeployScriptOutputFolderName)</BuildDirForDbDeployOutput>
 
 
-    <dbDeployDBName>MsBuildDbDeploy</dbDeployDBName>
+    <DbDeployDatabaseName>MsBuildDbDeploy</DbDeployDatabaseName>
     <DatabaseChangeLogTableName>EligibilityChangeLog</DatabaseChangeLogTableName>
     <DeploymentDirForApp>$(DeploymentDir)\$(AppFolderName)</DeploymentDirForApp>
     <DeploymentDirForDbDeploy>$(DeploymentDir)\$(DbDeployScriptFolderName)</DeploymentDirForDbDeploy>
@@ -87,8 +87,8 @@
     <PropertiesColumnInSettingSpreadsheet>Environment Name</PropertiesColumnInSettingSpreadsheet>
 
 
-    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(SqlServerName);Initial Catalog=$(dbDeployDBName);Integrated Security=SSPI</DatabaseConnectionString>
-    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(SqlServerName);Initial Catalog=$(dbDeployDBName);User Id=$(SqlServerUserName);Password=$(SqlServerPassword)</DatabaseConnectionString>
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(SqlServerName);Initial Catalog=$(DbDeployDatabaseName);Integrated Security=SSPI</DatabaseConnectionString>
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(SqlServerName);Initial Catalog=$(DbDeployDatabaseName);User Id=$(SqlServerUserName);Password=$(SqlServerPassword)</DatabaseConnectionString>
 
 
     <LogDir>..\Log</LogDir>

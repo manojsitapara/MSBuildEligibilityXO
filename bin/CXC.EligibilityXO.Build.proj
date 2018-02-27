@@ -422,7 +422,7 @@
 			  	DestinationFolder="$(BuildDirForApp)\%(RecursiveDir)"
           SkipUnchangedFiles="true" />
 
-
+    
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
     <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
@@ -667,13 +667,13 @@
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_apply.vm"
                   FindWord="USE #DBDEPLOYDATABASE#"
-                  ReplaceWithWord="USE [$(dbDeployDBName)]" />
+                  ReplaceWithWord="USE [$(DbDeployDatabaseName)]" />
 
 
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_undo.vm"
                   FindWord="USE #DBDEPLOYDATABASE#"
-                  ReplaceWithWord="USE [$(dbDeployDBName)]" />
+                  ReplaceWithWord="USE [$(DbDeployDatabaseName)]" />
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -864,13 +864,13 @@
     </ReadLinesFromFile>
 
     <PropertyGroup>
-      <CommandLineSqlForInsertNewAssemblyVersionNumber>Use $(dbDeployDBName) INSERT INTO $(DatabaseChangeLogTableName) VALUES('Dummy', $(NextScriptNumberForDbDeployDatabase), 'DummyScript', GETDATE(), GETDATE(),'dbo','1',  '$(AssemblyVersionNumber)' )</CommandLineSqlForInsertNewAssemblyVersionNumber>
+      <CommandLineSqlForInsertNewAssemblyVersionNumber>Use $(DbDeployDatabaseName) INSERT INTO $(DatabaseChangeLogTableName) VALUES('Dummy', $(NextScriptNumberForDbDeployDatabase), 'DummyScript', GETDATE(), GETDATE(),'dbo','1',  '$(AssemblyVersionNumber)' )</CommandLineSqlForInsertNewAssemblyVersionNumber>
     </PropertyGroup>
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
       Server="$(SqlServerName)"
-      Database="$(dbDeployDBName)"
+      Database="$(DbDeployDatabaseName)"
       CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
       Condition="$(IsSqlWindowsAuthentication)=='true'"/>
 
@@ -879,7 +879,7 @@
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
       Server="$(SqlServerName)"
-      Database="$(dbDeployDBName)"
+      Database="$(DbDeployDatabaseName)"
       LogOn="$(SqlServerUserName)"
       Password="$(SqlServerPassword)"
       CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
