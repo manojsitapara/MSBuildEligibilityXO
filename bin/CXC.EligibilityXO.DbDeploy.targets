@@ -45,7 +45,7 @@
 
 
     <ItemGroup>
-       <dbDeployFileName Include="$(BuildDirForDbDeployOutput)\**\*_output_*" />
+       <dbDeployFileName Include="$(DeploymentDirForDbDeploy)\**\*_output_*" />
     </ItemGroup>
 
     <PropertyGroup>

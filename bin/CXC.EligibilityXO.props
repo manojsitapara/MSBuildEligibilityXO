@@ -67,7 +67,8 @@
     <BuildDirForCommonWorkflowScript>$(BuildDirForWorkflowScript)\Common</BuildDirForCommonWorkflowScript>
     <BuildDirForDbDeploy>$(BuildDir)\$(DbDeployScriptInputFolderName)</BuildDirForDbDeploy>
     <BuildDirForDbDeployOutput>$(BuildDir)\$(DbDeployScriptOutputFolderName)</BuildDirForDbDeployOutput>
-
+    <BuildDirForConfig>$(BuildDirForApp)\config</BuildDirForConfig>
+    <BuildDirForSqls>$(BuildDirForApp)\sqls</BuildDirForSqls>
 
     <DbDeployDatabaseName>MsBuildDbDeploy</DbDeployDatabaseName>
     <DatabaseChangeLogTableName>EligibilityChangeLog</DatabaseChangeLogTableName>
@@ -107,7 +108,7 @@
     <FindAndReplaceTaskLibrary>..\lib\ReplaceValueInFile.dll</FindAndReplaceTaskLibrary>
     <MicrosoftBuildTasks>..\lib\Microsoft.Build.Tasks.v4.0.dll</MicrosoftBuildTasks>
     <DbDeployTemplateDir>..\lib\Resources</DbDeployTemplateDir>
-    <ConfigValuesSpreadsheetFileLocation>$(MSBuildThisFileDirectory)..\COnfig\Settings.xls</ConfigValuesSpreadsheetFileLocation>
+    <ConfigValuesSpreadsheetFileLocation>$(MSBuildThisFileDirectory)..\Config\Settings.xls</ConfigValuesSpreadsheetFileLocation>
     <XmlPreProcessorLibrary>..\lib\XmlPreprocess.MSBuildTasks.dll</XmlPreProcessorLibrary>
     <LibDir>$(MSBuildThisFileDirectory)..\lib</LibDir>
 
@@ -131,6 +132,10 @@
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges</BuildDirForMetaSqlScript>
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
 
+      <BuildDirForTPAConfig>$(BuildDirForApp)\ABG\config</BuildDirForTPAConfig>
+      <BuildDirForTPALayout>$(BuildDirForApp)\ABG\layout</BuildDirForTPALayout>
+      <BuildDirForTPASqls>$(BuildDirForApp)\ABG\sqls</BuildDirForTPASqls>
+
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
       
     </SolutionName>
@@ -148,6 +153,10 @@
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
       
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
+
+      <BuildDirForTPAConfig>$(BuildDirForApp)\PrimePay\config</BuildDirForTPAConfig>
+      <BuildDirForTPALayout>$(BuildDirForApp)\PrimePay\layout</BuildDirForTPALayout>
+      <BuildDirForTPASqls>$(BuildDirForApp)\PrimePay\sqls</BuildDirForTPASqls>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
       
