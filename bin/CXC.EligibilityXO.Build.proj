@@ -94,8 +94,8 @@
     <MakeDir Directories="$(BuildDir)" Condition="!Exists('$(BuildDir)')"/>
     <MakeDir Directories="$(BuildDirForApp)" Condition="!Exists('$(BuildDirForApp)')"/>
     <MakeDir Directories="$(BuildDirForDbDeploy)" Condition="!Exists('$(BuildDirForDbDeploy)')"/>
-    <!--<MakeDir Directories="$(BuildDirForConfig)" Condition="!Exists('$(BuildDirForConfig)')"/>
-    <MakeDir Directories="$(BuildDirForSqls)" Condition="!Exists('$(BuildDirForSqls)')"/>-->
+    <MakeDir Directories="$(BuildDirForConfig)" Condition="!Exists('$(BuildDirForConfig)')"/>
+    <MakeDir Directories="$(BuildDirForSqls)" Condition="!Exists('$(BuildDirForSqls)')"/>
 
     <MakeDir Directories="$(DeploymentDir)" Condition="!Exists('$(DeploymentDir)')"/>
     <MakeDir Directories="$(BackupDirForDeployment)" Condition="!Exists('$(BackupDirForDeployment)')"/>
@@ -136,14 +136,19 @@
     </PropertyGroup>
     
 
-    <!-- Below two commands creates folder structure for each TPA  -->
+    <!-- Below commands creates folder structure for each TPA  -->
     <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\4.$(TPAName)_MetaChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\4.$(TPAName)_MetaChanges')"/>
     <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\3.$(TPAName)_DataChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\3.$(TPAName)_DataChanges')"/>
 
 
-    <!-- Below two commands creates folder structure in build directory for each TPA  -->
+    <!-- Below commands creates folder structure in build directory for each TPA  -->
     <MakeDir Directories="$(BuildDirForWorkflowScript)\$(TPAName)" Condition="!Exists('$(BuildDirForWorkflowScript)\$(TPAName')"/>
+
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\config" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\config')"/>
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\layout" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\layout')"/>
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\sqls" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\sqls')"/>
     
+
     <!--<MakeDir Directories="$(BuildDirForTPAConfig)\$(TPAName)" Condition="!Exists('$(BuildDirForTPAConfig)\$(TPAName')"/>
     <Message Text="Message: $(TPAName)"></Message>-->
 
@@ -307,6 +312,19 @@
 
     <CallTarget Targets="BuildABGSolution"></CallTarget>
     <CallTarget Targets="BuildPrimePaySolution"></CallTarget>
+
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Config $(BuildDirForApp)\ABG\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\layout $(BuildDirForApp)\ABG\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\sqls $(BuildDirForApp)\ABG\sqls -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges -c -u' />
+    
+    
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Config $(BuildDirForApp)\PrimePay\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\layout $(BuildDirForApp)\PrimePay\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\sqls $(BuildDirForApp)\PrimePay\sqls -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges -c -u' />
     
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -361,11 +379,14 @@
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
-
     
     <CallTarget Targets="BuildCXCCoreSolution"></CallTarget>
     <CallTarget Targets="BuildCXCEngineSolution"></CallTarget>
-
+    
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Config $(BuildDirForConfig) -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Build\SchemaChanges $(BuildDirForCXCCoreSchemaChangesSql) -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Build\MetaChanges $(BuildDirForCXCCoreMetaChangesSql) -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Engine\Config $(BuildDirForConfig) -c -u' />
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 

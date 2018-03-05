@@ -132,10 +132,6 @@
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges</BuildDirForMetaSqlScript>
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
 
-      <BuildDirForTPAConfig>$(BuildDirForApp)\ABG\config</BuildDirForTPAConfig>
-      <BuildDirForTPALayout>$(BuildDirForApp)\ABG\layout</BuildDirForTPALayout>
-      <BuildDirForTPASqls>$(BuildDirForApp)\ABG\sqls</BuildDirForTPASqls>
-
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
       
     </SolutionName>
@@ -153,10 +149,6 @@
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
       
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
-
-      <BuildDirForTPAConfig>$(BuildDirForApp)\PrimePay\config</BuildDirForTPAConfig>
-      <BuildDirForTPALayout>$(BuildDirForApp)\PrimePay\layout</BuildDirForTPALayout>
-      <BuildDirForTPASqls>$(BuildDirForApp)\PrimePay\sqls</BuildDirForTPASqls>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
       
