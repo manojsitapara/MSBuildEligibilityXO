@@ -9,7 +9,7 @@ GO
 BEGIN TRANSACTION
 GO
 
-USE [MsBuildEligibility]
+USE [MsbuildCXC]
 $script.getContent()
 
 USE [MsBuildDbDeploy]

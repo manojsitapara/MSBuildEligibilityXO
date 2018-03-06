@@ -3,16 +3,16 @@
 
   <PropertyGroup>
 
-    <SVNSourceURL>https://svn.cxcnetwork.com/svn/CXCcore/branches/TestBuild</SVNSourceURL>
-    <SVNTagURL>https://svn.cxcnetwork.com/svn/CXCcore/tags</SVNTagURL>
-
+    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
+    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>
+    
     <!-- MSBuild script folder structure settings -->
 
     <!-- Specify the root directory to create msbuild script folder structure -->
-    <RootDir>G:\MSBuildTesting\QA</RootDir>
+    <RootDir>E:\MSBuildTesting_fromCXCSVN1\QA</RootDir>
 
     <!-- Specify the path to copy build code on server -->
-    <DestinationDir>H:\ProductionServer</DestinationDir>
+    <DestinationDir>E:\MSBuildTesting_fromCXCSVN1\QA\QAServer</DestinationDir>
 
     <!-- Source code SVN settings -->
 
@@ -23,7 +23,7 @@
     <!--Set value true to overwrite source code if any changes else false -->
     <ForceSourceOverwrite>false</ForceSourceOverwrite>
     <!-- To build CXC Engine solution, set value to true -->
-    <BuildEligibilityXOEngine>false</BuildEligibilityXOEngine>
+    <BuildEligibilityXOEngine>true</BuildEligibilityXOEngine>
     <!-- To build GDI solution, set value to true -->
     <BuildABG>true</BuildABG>
     <!-- To build PrimePay solution, set value to true -->
@@ -55,7 +55,7 @@
     <!--Specify Sql server Version e.g. 2008, 2012 or 2014 so as to use appropriate msbuild.extension.sqlpack -->
     <SqlServerVersion>2012</SqlServerVersion>
     <!--Specify Sql server name-->
-    <SqlServerName>LAPTOP-4857HARD\PRODUCTION</SqlServerName>
+    <SqlServerName>.</SqlServerName>
 
     <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false -->
     <SqlServerUserName>sa</SqlServerUserName>
@@ -72,7 +72,7 @@
     <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
 
     <!--Specify assembly build number needs to set (e.g. 2016.10.01.0) -->
-    <AssemblyBuildNumber></AssemblyBuildNumber>
+    <AssemblyBuildNumber>2018.02.05.01</AssemblyBuildNumber>
 
   </PropertyGroup>
 

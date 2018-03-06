@@ -133,7 +133,7 @@
       <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
-      
+
     </SolutionName>
 
     

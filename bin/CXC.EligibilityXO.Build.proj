@@ -310,21 +310,12 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
+    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingABGSolution"></CallTarget>
     <CallTarget Targets="BuildABGSolution"></CallTarget>
+    
+    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingPrimePaySolution"></CallTarget>
     <CallTarget Targets="BuildPrimePaySolution"></CallTarget>
 
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Config $(BuildDirForApp)\ABG\Config -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\layout $(BuildDirForApp)\ABG\layout -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\sqls $(BuildDirForApp)\ABG\sqls -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges -c -u' />
-    
-    
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Config $(BuildDirForApp)\PrimePay\Config -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\layout $(BuildDirForApp)\PrimePay\layout -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\sqls $(BuildDirForApp)\PrimePay\sqls -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges -c -u' />
     
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -371,7 +362,7 @@
 
 
 
-
+  
   <Target Name="BuildEligibilityXOEngine">
 
     <PropertyGroup>
@@ -397,7 +388,28 @@
 
   </Target>
 
-  <Target Name="BuildABGSolution" Inputs="@(ABGCSharpFiles)" Outputs="@(ABGAssemblyFile)">
+  <Target Name="CopyConfigAndSqlFilesBeforeBuildingABGSolution" Condition="$(BuildABG)=='true'">
+
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Config $(BuildDirForApp)\ABG\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\layout $(BuildDirForApp)\ABG\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\sqls $(BuildDirForApp)\ABG\sqls -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges -c -u' />
+    
+  </Target>
+
+  <Target Name="CopyConfigAndSqlFilesBeforeBuildingPrimePaySolution" Condition="$(BuildPrimePay)=='true'">
+
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Config $(BuildDirForApp)\PrimePay\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\layout $(BuildDirForApp)\PrimePay\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\sqls $(BuildDirForApp)\PrimePay\sqls -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges -c -u' />
+
+
+  </Target>
+
+  <Target Name="BuildABGSolution" Inputs="@(ABGCSharpFiles)" Outputs="@(ABGAssemblyFile)" Condition="$(BuildABG)=='true'" >
 
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildABGSolution'">BuildABGSolution</CurrentTargetName>
@@ -414,7 +426,7 @@
 
   </Target>
 
-  <Target Name="BuildPrimePaySolution" Inputs="@(PrimePayCSharpFiles)" Outputs="@(PrimePayAssemblyFile)">
+  <Target Name="BuildPrimePaySolution" Inputs="@(PrimePayCSharpFiles)" Outputs="@(PrimePayAssemblyFile)" Condition="$(BuildPrimePay)=='true'">
 
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildPrimePaySolution'">BuildPrimePaySolution</CurrentTargetName>
