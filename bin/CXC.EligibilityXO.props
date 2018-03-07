@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Environment>QA</Environment>
  
-    <SvnUsername></SvnUsername>
-    <SvnPassword></SvnPassword>
+    <SvnUsername>HoP4QmzysBqe13EMof+4EQ==</SvnUsername>
+    <SvnPassword>pYSoMhSZUPfjryeEbt+F1w==</SvnPassword>
   </PropertyGroup>
 
 
@@ -70,8 +70,8 @@
     <BuildDirForConfig>$(BuildDirForApp)\config</BuildDirForConfig>
     <BuildDirForSqls>$(BuildDirForApp)\sqls</BuildDirForSqls>
 
-    <DbDeployDatabaseName>MsBuildDbDeploy</DbDeployDatabaseName>
-    <DatabaseChangeLogTableName>EligibilityChangeLog</DatabaseChangeLogTableName>
+    <DbDeployDatabaseName>ca6BarzE57DBFf1tQDufjw==</DbDeployDatabaseName>
+    <DatabaseChangeLogTableName>8x21wU8uVPhC5ohQwBF6s2ESZ4ZAzG3Pyz5aYIcoKo8=</DatabaseChangeLogTableName>
     <DeploymentDirForApp>$(DeploymentDir)\$(AppFolderName)</DeploymentDirForApp>
     <DeploymentDirForDbDeploy>$(DeploymentDir)\$(DbDeployScriptFolderName)</DeploymentDirForDbDeploy>
     
@@ -88,8 +88,8 @@
     <PropertiesColumnInSettingSpreadsheet>Environment Name</PropertiesColumnInSettingSpreadsheet>
 
 
-    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(SqlServerName);Initial Catalog=$(DbDeployDatabaseName);Integrated Security=SSPI</DatabaseConnectionString>
-    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(SqlServerName);Initial Catalog=$(DbDeployDatabaseName);User Id=$(SqlServerUserName);Password=$(SqlServerPassword)</DatabaseConnectionString>
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(DecryptSqlServerName);Initial Catalog=$(DecryptDbDeployDatabaseName);Integrated Security=SSPI</DatabaseConnectionString>
+    <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(DecryptSqlServerName);Initial Catalog=$(DecryptDbDeployDatabaseName);User Id=$(DecryptSqlServerUserName);Password=$(DecryptSqlServerPassword)</DatabaseConnectionString>
 
 
     <LogDir>..\Log</LogDir>
@@ -111,8 +111,16 @@
     <ConfigValuesSpreadsheetFileLocation>$(MSBuildThisFileDirectory)..\Config\Settings.xls</ConfigValuesSpreadsheetFileLocation>
     <XmlPreProcessorLibrary>..\lib\XmlPreprocess.MSBuildTasks.dll</XmlPreProcessorLibrary>
     <LibDir>$(MSBuildThisFileDirectory)..\lib</LibDir>
+    <SecurePassword>..\lib\SecurePassword.dll</SecurePassword>
 
-    
+
+    <DecryptSqlServerName></DecryptSqlServerName>
+    <DecryptSqlServerUserName></DecryptSqlServerUserName>
+    <DecryptSqlServerPassword></DecryptSqlServerPassword>
+    <DecryptSqlApplicationDatabaseName></DecryptSqlApplicationDatabaseName>
+    <DecryptDbDeployDatabaseName></DecryptDbDeployDatabaseName>
+    <DecryptDatabaseChangeLogTableName></DecryptDatabaseChangeLogTableName>
+
   </PropertyGroup>
 
 

@@ -55,15 +55,15 @@
     <!--Specify Sql server Version e.g. 2008, 2012 or 2014 so as to use appropriate msbuild.extension.sqlpack -->
     <SqlServerVersion>2012</SqlServerVersion>
     <!--Specify Sql server name-->
-    <SqlServerName>.</SqlServerName>
+    <SqlServerName>zy2/4mJJ+5XIiRp2pg2S7w==</SqlServerName>
 
     <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false -->
-    <SqlServerUserName>sa</SqlServerUserName>
+    <SqlServerUserName>4cZZdPhKttntu1j59ka/qw==</SqlServerUserName>
     <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false  -->
-    <SqlServerPassword>sa123</SqlServerPassword>
+    <SqlServerPassword>M9xUe6A9Al+OsrB3va5GOw==</SqlServerPassword>
 
     <!--specify database name -->
-    <ApplicationDatabaseName>MsBuildEligibility</ApplicationDatabaseName>
+    <ApplicationDatabaseName>iyDrR7CZedn6n1Yg6U3Knsfr5MZAAIwhDOQqI073zjU=</ApplicationDatabaseName>
 
 
 

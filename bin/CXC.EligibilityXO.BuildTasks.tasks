@@ -11,8 +11,8 @@
 
   <!--Refer to the ReplaceValueInFile to update Xml config value. This is used to find and replace values into config files.-->
   <UsingTask TaskName="FindAndReplace" AssemblyFile="$(FindAndReplaceTaskLibrary)" />
-  
-  
+
+  <UsingTask TaskName="SecurePassword" AssemblyFile="$(SecurePassword)" />
 
   
   

@@ -20,7 +20,7 @@
   <Import Project="CXC.EligibilityXO.DbDeploy.targets"/>
   <Import Project="CXC.EligibilityXO.Backup.targets"/>
   <Import Project="CXC.EligibilityXO.EmailNotification.targets"/>
-
+  
   <!-- EndRegion -->
 
 
@@ -29,7 +29,7 @@
     <UpdateAssemblyVersionTarget Include="CustomAfterMicrosoftCommonTargets=$(MSBuildThisFileDirectory)\CXC.EligibilityXO.Assembly.Version.Targets;Configuration=Release"></UpdateAssemblyVersionTarget>
   </ItemGroup>
 
-
+  
   <Target Name="Init">
 
     <PropertyGroup>
@@ -38,9 +38,8 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-
+    
     <CallTarget Targets="CheckChangeLogTableExist"></CallTarget>
-
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -48,10 +47,56 @@
 
   </Target>
 
-  <Target Name="CheckChangeLogTableExist">
+
+  <Target Name="DecryptSqlServerValue">
+
+    <PropertyGroup>
+      <CurrentTargetName>DecryptSqlServerValue</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+    <SecurePassword InputString="$(SqlServerName)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerName"/>
+    </SecurePassword>
+
+    <SecurePassword InputString="$(SqlServerUserName)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerUserName"/>
+    </SecurePassword>
+
+    <SecurePassword InputString="$(SqlServerPassword)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerPassword"/>
+    </SecurePassword>
+
+    <SecurePassword InputString="$(ApplicationDatabaseName)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptSqlApplicationDatabaseName"/>
+    </SecurePassword>
+
+
+    <SecurePassword InputString="$(DbDeployDatabaseName)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptDbDeployDatabaseName"/>
+    </SecurePassword>
+
+
+    <SecurePassword InputString="$(DatabaseChangeLogTableName)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="DecryptDatabaseChangeLogTableName"/>
+    </SecurePassword>
+
+
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+  
+  
+  
+  <Target Name="CheckChangeLogTableExist" DependsOnTargets="DecryptSqlServerValue">
 
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">CheckChangeLogTableExist</CurrentTargetName>
+      <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='true'">Server=$(DecryptSqlServerName);Initial Catalog=$(DecryptDbDeployDatabaseName);Integrated Security=SSPI</DatabaseConnectionString>
+      <DatabaseConnectionString Condition="$(IsSqlWindowsAuthentication)=='false'">Server=$(DecryptSqlServerName);Initial Catalog=$(DecryptDbDeployDatabaseName);User Id=$(DecryptSqlServerUserName);Password=$(DecryptSqlServerPassword)</DatabaseConnectionString>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
@@ -60,7 +105,7 @@
     <MSBuild.ExtensionPack.SqlServer.SqlExecute
       TaskAction="ExecuteScalar"
       UseTransaction="true"
-      Sql="select case when exists((select * from information_schema.tables where table_name = '$(DatabaseChangeLogTableName)')) then 1 else 0 end"
+      Sql="select case when exists((select * from information_schema.tables where table_name = '$(DecryptDatabaseChangeLogTableName)')) then 1 else 0 end"
       ConnectionString="$(DatabaseConnectionString)">
       <Output PropertyName="IsTableExist" TaskParameter="ScalarResult"/>
     </MSBuild.ExtensionPack.SqlServer.SqlExecute>
@@ -162,11 +207,19 @@
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+    
+    <SecurePassword InputString="$(SvnUsername)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="UserName"/>
+    </SecurePassword>
+
+    <SecurePassword InputString="$(SvnPassword)" IsEncrypt="false">
+      <Output TaskParameter="OutputString" PropertyName="Password"/>
+    </SecurePassword>
 
     <SvnCheckout  RepositoryPath="$(SVNSourceURL)"
 			            LocalPath="$(SourceDir)"
-			            UserName="$(SvnUsername)"
-			            Password="$(SvnPassword)">
+			            UserName="$(UserName)"
+			            Password="$(Password)">
       <Output TaskParameter="Revision" PropertyName="Revision" />
     </SvnCheckout>
 
@@ -258,7 +311,7 @@
     <MSBuild.ExtensionPack.SqlServer.SqlExecute
       TaskAction="ExecuteScalar"
       UseTransaction="true"
-      Sql="select top 1  ScriptOutput from $(DatabaseChangeLogTableName) where ScriptOutput!=''  order by CompleteDate desc"
+      Sql="select top 1  ScriptOutput from $(DecryptDatabaseChangeLogTableName) where ScriptOutput!=''  order by CompleteDate desc"
       ConnectionString="$(DatabaseConnectionString)">
       <Output PropertyName="PreviousAssemblyVersionNumber" TaskParameter="ScalarResult"/>
     </MSBuild.ExtensionPack.SqlServer.SqlExecute>
@@ -707,19 +760,19 @@
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_apply.vm"
                   FindWord="USE #ELIGIBILITYXODATABASE#"
-                  ReplaceWithWord="USE [$(ApplicationDatabaseName)]" />
+                  ReplaceWithWord="USE [$(DecryptSqlApplicationDatabaseName)]" />
 
 
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_apply.vm"
                   FindWord="USE #DBDEPLOYDATABASE#"
-                  ReplaceWithWord="USE [$(DbDeployDatabaseName)]" />
+                  ReplaceWithWord="USE [$(DecryptDbDeployDatabaseName)]" />
 
 
     <FindAndReplace
                   Filename="$(LibDir)\Resources\mssql_undo.vm"
                   FindWord="USE #DBDEPLOYDATABASE#"
-                  ReplaceWithWord="USE [$(DbDeployDatabaseName)]" />
+                  ReplaceWithWord="USE [$(DecryptDbDeployDatabaseName)]" />
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -904,7 +957,7 @@
     <MSBuild.ExtensionPack.SqlServer.SqlExecute
       TaskAction="ExecuteScalar"
       UseTransaction="false"
-      Sql="select max(ScriptNumber) from $(DatabaseChangeLogTableName) where Folder='Dummy' "
+      Sql="select max(ScriptNumber) from $(DecryptDatabaseChangeLogTableName) where Folder='Dummy' "
       ConnectionString="$(DatabaseConnectionString)">
       <Output PropertyName="MaxScriptNumberFromDbDeployDatabase" TaskParameter="ScalarResult"/>
     </MSBuild.ExtensionPack.SqlServer.SqlExecute>
@@ -920,13 +973,13 @@
     </ReadLinesFromFile>
 
     <PropertyGroup>
-      <CommandLineSqlForInsertNewAssemblyVersionNumber>Use $(DbDeployDatabaseName) INSERT INTO $(DatabaseChangeLogTableName) VALUES('Dummy', $(NextScriptNumberForDbDeployDatabase), 'DummyScript', GETDATE(), GETDATE(),'dbo','1',  '$(AssemblyVersionNumber)' )</CommandLineSqlForInsertNewAssemblyVersionNumber>
+      <CommandLineSqlForInsertNewAssemblyVersionNumber>Use $(DecryptDbDeployDatabaseName) INSERT INTO $(DecryptDatabaseChangeLogTableName) VALUES('Dummy', $(NextScriptNumberForDbDeployDatabase), 'DummyScript', GETDATE(), GETDATE(),'dbo','1',  '$(AssemblyVersionNumber)' )</CommandLineSqlForInsertNewAssemblyVersionNumber>
     </PropertyGroup>
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
-      Server="$(SqlServerName)"
-      Database="$(DbDeployDatabaseName)"
+      Server="$(DecryptSqlServerName)"
+      Database="$(DecryptDbDeployDatabaseName)"
       CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
       Condition="$(IsSqlWindowsAuthentication)=='true'"/>
 
@@ -934,10 +987,10 @@
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
-      Server="$(SqlServerName)"
-      Database="$(DbDeployDatabaseName)"
-      LogOn="$(SqlServerUserName)"
-      Password="$(SqlServerPassword)"
+      Server="$(DecryptSqlServerName)"
+      Database="$(DecryptDbDeployDatabaseName)"
+      LogOn="$(DecryptSqlServerUserName)"
+      Password="$(DecryptSqlServerPassword)"
       CommandLineQuery="$(CommandLineSqlForInsertNewAssemblyVersionNumber)"
       Condition="$(IsSqlWindowsAuthentication)=='false'"/>
 
@@ -987,7 +1040,7 @@
 
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
 
-
+   
   </Target>
 
 

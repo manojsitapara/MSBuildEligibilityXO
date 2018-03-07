@@ -2,7 +2,7 @@
   
   
   <PropertyGroup>
-    <BackupPreBuildDatabaseFile>$(BackupDirForDatabase)\$(ApplicationDatabaseName)_PreBuild_$(CurrentDateTime).bak</BackupPreBuildDatabaseFile>
+    <BackupPreBuildDatabaseFile>$(BackupDirForDatabase)\$(DecryptSqlApplicationDatabaseName)_PreBuild_$(CurrentDateTime).bak</BackupPreBuildDatabaseFile>
     <BackupPreBuildSourceFile>$(BackupDirForSource)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildSourceFile>
     <BackupPostBuildDeploymentFile>$(BackupDirForDeployment)\EligibilityXO_PostBuild_$(CurrentDateTime).zip</BackupPostBuildDeploymentFile>
     <BackupPreBuildDestinationFile>$(BackupDirForDestination)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildDestinationFile>
@@ -38,10 +38,10 @@
 
     <MSBuild.ExtensionPack.Sql2008.Database
       TaskAction="Backup"
-      DatabaseItem="$(ApplicationDatabaseName)"
-      MachineName="$(SqlServerName)"
-      UserName="$(SqlServerUserName)"
-      UserPassword="$(SqlServerPassword)"
+      DatabaseItem="$(DecryptSqlApplicationDatabaseName)"
+      MachineName="$(DecryptSqlServerName)"
+      UserName="$(DecryptSqlServerUserName)"
+      UserPassword="$(DecryptSqlServerPassword)"
       DataFilePath="$(BackupPreBuildDatabaseFile)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 
@@ -63,10 +63,10 @@
 
     <MSBuild.ExtensionPack.Sql2012.Database
       TaskAction="Backup"
-      DatabaseItem="$(ApplicationDatabaseName)"
-      MachineName="$(SqlServerName)"
-      UserName="$(SqlServerUserName)"
-      UserPassword="$(SqlServerPassword)"
+      DatabaseItem="$(DecryptSqlApplicationDatabaseName)"
+      MachineName="$(DecryptSqlServerName)"
+      UserName="$(DecryptSqlServerUserName)"
+      UserPassword="$(DecryptSqlServerPassword)"
       DataFilePath="$(BackupPreBuildDatabaseFile)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 
@@ -88,10 +88,10 @@
 
     <MSBuild.ExtensionPack.Sql2014.Database
       TaskAction="Backup"
-      DatabaseItem="$(ApplicationDatabaseName)"
-      MachineName="$(SqlServerName)"
-      UserName="$(SqlServerUserName)"
-      UserPassword="$(SqlServerPassword)"
+      DatabaseItem="$(DecryptSqlApplicationDatabaseName)"
+      MachineName="$(DecryptSqlServerName)"
+      UserName="$(DecryptSqlServerUserName)"
+      UserPassword="$(DecryptSqlServerPassword)"
       DataFilePath="$(BackupPreBuildDatabaseFile)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 

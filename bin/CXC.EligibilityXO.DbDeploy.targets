@@ -29,7 +29,7 @@
             Dir="$(BuildDirForDbDeploy)"
             OutputFile="$(DbDeployOutputFileName)"
             UndoOutputFile="$(DbDeployUndoOutputFileName)"
-            TableName="$(DatabaseChangeLogTableName)"
+            TableName="$(DecryptDatabaseChangeLogTableName)"
             AutoCreateChangeLogTable="true"
             forceUpdate="true"  />
 
@@ -57,21 +57,21 @@
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
     <Message Text="@(dbDeployFileName)"></Message>
-    <Message Text="Executing change script ($(SqlCmdInputFile)) on $(DbDeployDatabaseName) ..."/>
+    <Message Text="Executing change script ($(SqlCmdInputFile)) on $(DecryptDbDeployDatabaseName) ..."/>
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
-      Server="$(SqlServerName)"
-      Database="$(DbDeployDatabaseName)"
-      LogOn="$(SqlServerUserName)"
-      Password="$(SqlServerPassword)"
+      Server="$(DecryptSqlServerName)"
+      Database="$(DecryptDbDeployDatabaseName)"
+      LogOn="$(DecryptSqlServerUserName)"
+      Password="$(DecryptSqlServerPassword)"
       InputFiles="$(SqlCmdInputFile)"
       Condition="$(IsSqlWindowsAuthentication)=='false'"/>
 
     <MSBuild.ExtensionPack.SqlServer.SqlCmd
       TaskAction="Execute"
-      Server="$(SqlServerName)"
-      Database="$(DbDeployDatabaseName)"
+      Server="$(DecryptSqlServerName)"
+      Database="$(DecryptDbDeployDatabaseName)"
       InputFiles="$(SqlCmdInputFile)"
       Condition="$(IsSqlWindowsAuthentication)=='true'"/>
 
