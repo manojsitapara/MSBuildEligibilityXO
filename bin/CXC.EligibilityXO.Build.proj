@@ -56,32 +56,69 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-    <SecurePassword InputString="$(SqlServerName)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerName"/>
-    </SecurePassword>
 
-    <SecurePassword InputString="$(SqlServerUserName)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerUserName"/>
-    </SecurePassword>
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(SqlServerName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptSqlServerName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
 
-    <SecurePassword InputString="$(SqlServerPassword)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptSqlServerPassword"/>
-    </SecurePassword>
-
-    <SecurePassword InputString="$(ApplicationDatabaseName)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptSqlApplicationDatabaseName"/>
-    </SecurePassword>
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(ApplicationDatabaseName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptSqlApplicationDatabaseName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
 
 
-    <SecurePassword InputString="$(DbDeployDatabaseName)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptDbDeployDatabaseName"/>
-    </SecurePassword>
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(DbDeployDatabaseName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptDbDeployDatabaseName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(DatabaseChangeLogTableName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptDatabaseChangeLogTableName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(ApplicationDatabaseName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptApplicationDatabaseName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
 
 
-    <SecurePassword InputString="$(DatabaseChangeLogTableName)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="DecryptDatabaseChangeLogTableName"/>
-    </SecurePassword>
+    <!--Call this target when SqlServerUserName & SqlServerPassword property is empty, else it throws error  -->
+    <CallTarget Targets="DecryptSqlServerUserInfoValue" Condition="$(SqlServerUserName) != '' AND $(SqlServerPassword) != '' "></CallTarget>
+    
+    
+    <!-- Removing unnecessary new line and extar space, by default ExecuteRawReader return space and new line in output-->
+    <PropertyGroup>
+      <DecryptSqlServerName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptSqlServerName), '\s+', '') )</DecryptSqlServerName>
+      <DecryptSqlApplicationDatabaseName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptSqlApplicationDatabaseName), '\s+', '') )</DecryptSqlApplicationDatabaseName>
+      <DecryptDbDeployDatabaseName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptDbDeployDatabaseName), '\s+', '') )</DecryptDbDeployDatabaseName>
+      <DecryptDatabaseChangeLogTableName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptDatabaseChangeLogTableName), '\s+', '') )</DecryptDatabaseChangeLogTableName>
+      <DecryptApplicationDatabaseName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptApplicationDatabaseName), '\s+', '') )</DecryptApplicationDatabaseName>
+      <DecryptSqlServerUserName>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptSqlServerUserName), '\s+', '') )</DecryptSqlServerUserName>
+      <DecryptSqlServerPassword>$([System.Text.RegularExpressions.Regex]::Replace( $(DecryptSqlServerPassword), '\s+', '') )</DecryptSqlServerPassword>
+    </PropertyGroup>
+    
 
+    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
+
+    <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
+
+  </Target>
+
+
+  <Target Name="DecryptSqlServerUserInfoValue">
+
+    <PropertyGroup>
+      <CurrentTargetName>DecryptSqlServerUserInfoValue</CurrentTargetName>
+    </PropertyGroup>
+
+    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
+
+
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(SqlServerUserName)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptSqlServerUserName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+    
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(SqlServerPassword)')" ConnectionString="$(DatabaseConnectionString)">
+      <Output PropertyName="DecryptSqlServerPassword" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+    
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -208,13 +245,21 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
     
-    <SecurePassword InputString="$(SvnUsername)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="UserName"/>
-    </SecurePassword>
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(SvnUsername)')" ConnectionString="$(ApplicationDatabaseConnectionString)">
+      <Output PropertyName="UserName" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
 
-    <SecurePassword InputString="$(SvnPassword)" IsEncrypt="false">
-      <Output TaskParameter="OutputString" PropertyName="Password"/>
-    </SecurePassword>
+    
+    <MSBuild.ExtensionPack.SqlServer.SqlExecute TaskAction="ExecuteRawReader" UseTransaction="true" Sql="select dbo.DecryptValue('$(SvnPassword)')" ConnectionString="$(ApplicationDatabaseConnectionString)">
+      <Output PropertyName="Password" TaskParameter="RawReaderResult"/>
+    </MSBuild.ExtensionPack.SqlServer.SqlExecute>
+
+    <!-- Removing unnecessary new line and extar space, by default ExecuteRawReader return space and new line in output-->
+    <PropertyGroup>
+      <UserName>$([System.Text.RegularExpressions.Regex]::Replace( $(UserName), '\s+', '') )</UserName>
+      <Password>$([System.Text.RegularExpressions.Regex]::Replace( $(Password), '\s+', '') )</Password>
+    </PropertyGroup>
+
 
     <SvnCheckout  RepositoryPath="$(SVNSourceURL)"
 			            LocalPath="$(SourceDir)"
@@ -445,7 +490,6 @@
 
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Config $(BuildDirForApp)\ABG\Config -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\layout $(BuildDirForApp)\ABG\layout -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\sqls $(BuildDirForApp)\ABG\sqls -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges -c -u' />
     
@@ -455,7 +499,6 @@
 
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Config $(BuildDirForApp)\PrimePay\Config -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\layout $(BuildDirForApp)\PrimePay\layout -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\sqls $(BuildDirForApp)\PrimePay\sqls -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges -c -u' />
 
@@ -505,14 +548,15 @@
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
     <ItemGroup>
-      <BuildFiles Include="$(RootDirForSurceCode)\Engine\bin\Release\**\*.*" />
+      <BuildFiles Include="$(RootDirForSurceCode)\Engine\bin\Release\*.dll"/>
+      <BuildFiles Include="$(RootDirForSurceCode)\Engine\bin\Release\*.exe"/>
+      <BuildFiles Include="$(RootDirForSurceCode)\Engine\bin\Release\*.exe.config"/>
     </ItemGroup>
 
-    <!--<Copy SourceFiles="@(BuildFiles)"
+    <Copy SourceFiles="@(BuildFiles)"
 			  	DestinationFolder="$(BuildDirForApp)\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />-->
+          SkipUnchangedFiles="true" />
 
-    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Engine\bin\Release $(BuildDirForApp) -c -u' />
 
     
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -821,6 +865,7 @@
 
   </Target>
 
+  <!--DO NOT CHANGE THIS TARGET NAME, IT'S BEING USED BY CUSTOM LOGGER-->
   <Target Name="CopyBuildFilesToDeploymentDir">
 
     <PropertyGroup>
@@ -848,6 +893,7 @@
     <OnError ExecuteTargets="SendEmailNotification" Condition="$(SendEmailNotification)=='true'"  />
   </Target>
 
+  <!--DO NOT CHANGE THIS TARGET NAME, IT'S BEING USED BY CUSTOM LOGGER-->
   <Target Name="CopyDbDeployOutputFilesToDeploymentDir">
 
     <PropertyGroup>
@@ -1036,8 +1082,12 @@
 
   <Target Name="Run">
 
-    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /fl1 /fl2 /flp1:logfile=$(LogFileName) /flp2:logfile=$(ErrorLogFileName);errorsonly;warningsonly "/>
+    <!--<Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /fl1 /fl2 /flp1:logfile=$(LogFileName) /flp2:logfile=$(ErrorLogFileName);errorsonly;warningsonly "/>
+    
+    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /l:SecureFileLogger,$(LibDir)\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=$(LogFileName) "/>-->
 
+    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll /noconsolelogger "/>
+    
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
 
    

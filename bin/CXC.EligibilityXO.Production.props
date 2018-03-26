@@ -57,17 +57,17 @@
     <!--Specify Sql server name-->
     <SqlServerName>zy2/4mJJ+5XIiRp2pg2S7w==</SqlServerName>
 
-    <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false -->
+    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
     <SqlServerUserName>4cZZdPhKttntu1j59ka/qw==</SqlServerUserName>
-    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false  -->
+    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
     <SqlServerPassword>M9xUe6A9Al+OsrB3va5GOw==</SqlServerPassword>
 
     <!--specify database name -->
     <ApplicationDatabaseName>iyDrR7CZedn6n1Yg6U3Knsfr5MZAAIwhDOQqI073zjU=</ApplicationDatabaseName>
 
 
-
-
+    
+    
     <!--Specify TO email address to send error email notification -->
     <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
 

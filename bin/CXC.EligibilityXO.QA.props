@@ -3,9 +3,9 @@
 
   <PropertyGroup>
 
-    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
-    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>
-    <!--<SVNSourceURL>https://svn.cxcnetwork.com/svn/EligibilityXO/branches/TestBuild/CXC/</SVNSourceURL>
+    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligbilityXO/trunk/</SVNSourceURL>
+    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligbilityXO/tags</SVNTagURL>
+    <!--<SVNSourceURL>https://svn.cxcnetwork.com/svn/EligibilityXO/branches/TestBuild/</SVNSourceURL>
     <SVNTagURL>https://svn.cxcnetwork.com/svn/EligibilityXO/tags</SVNTagURL>-->
 
     <!-- MSBuild script folder structure settings -->
@@ -55,15 +55,19 @@
     <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
     <SqlServerVersion>2012</SqlServerVersion>
     <!--Specify Sql server name-->
-    <SqlServerName>zy2/4mJJ+5XIiRp2pg2S7w==</SqlServerName>
+    <SqlServerName>C6yt9c6/EWmWT62MOcWSTQ==</SqlServerName>
 
-    <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false -->
-    <SqlServerUserName>4cZZdPhKttntu1j59ka/qw==</SqlServerUserName>
-    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false  -->
-    <SqlServerPassword>M9xUe6A9Al+OsrB3va5GOw==</SqlServerPassword>
+    <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false, else keep empty -->
+    <!--4cZZdPhKttntu1j59ka/qw==-->
+    <SqlServerUserName></SqlServerUserName>
+    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
+    <!--M9xUe6A9Al+OsrB3va5GOw==-->
+    <SqlServerPassword></SqlServerPassword>
 
     <!--specify database name -->
-    <ApplicationDatabaseName>iyDrR7CZedn6n1Yg6U3Knsfr5MZAAIwhDOQqI073zjU=</ApplicationDatabaseName>
+    <ApplicationDatabaseName>MZcd8zV7Mf6bZuRJKFs+CYDPFCzjYAdA2fho9VQjJzg=</ApplicationDatabaseName>
+    
+    
 
 
 
