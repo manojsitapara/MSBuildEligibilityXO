@@ -1,0 +1,21 @@
+Following files are being used by custom logger
+Serilog.dll 
+Serilog.Sinks.File.dll
+Serilog.Sinks.RollingFile.dll
+Serilog.xml
+Serilog.Sinks.File.xml
+
+XmlPreprocess.MSBuildTasks is used to transform config file
+
+ReplaceValueInFile.dll is used by internal msbuild operation
+
+MSBuild.Dbdeploy.Task.dll is used to deploy database script
+
+Following files are being used by MSBuild.Dbdeploy.Task.dll
+Net.Sf.Dbdeploy.dll
+NVelocity
+NVelocity.xml
+
+
+MSBuild.Community.Tasks.dll being used by MSBuild internal script
+
