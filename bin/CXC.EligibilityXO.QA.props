@@ -75,7 +75,7 @@
     <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
 
     <!--Specify assembly build number needs to set (e.g. 2016.10.01.0) -->
-    <AssemblyBuildNumber>2018.02.05.01</AssemblyBuildNumber>
+    <AssemblyBuildNumber>2018.03.01.0</AssemblyBuildNumber>
 
   </PropertyGroup>
 
