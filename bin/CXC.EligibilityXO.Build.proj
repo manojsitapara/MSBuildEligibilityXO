@@ -1086,11 +1086,11 @@
     
     <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /l:SecureFileLogger,$(LibDir)\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=$(LogFileName) "/>-->
 
-    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll /noconsolelogger "/>
+    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll;FromEmailAddress=alertsqa@cxcnetwork.com;ToEmailAddress=manojs@cxcnetwork.com /noconsolelogger "/>
     
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
 
-   
+    
   </Target>
 
 
