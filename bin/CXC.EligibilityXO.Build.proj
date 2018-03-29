@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
 
-  <!--Msbuild command: msbuild CXC.EligibilityXO.Build.proj /p:Environment="Production"-->
-  <!--msbuild CXC.EligibilityXO.Build.proj /l:XMLFileLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=CXC.EligibilityXO.Log.xml-->
-  <!--msbuild CXC.EligibilityXO.Build.proj /l:SqlLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;BID=123;BN=2016;DS=.;IC=MSBuildLogs;SP=msbep_SqlLogger-->
-  <!--msbuild CXC.EligibilityXO.Build.proj /l:SecureFileLogger,..\lib\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=CXC.EligibilityXO.Log.txt-->
-  
-  <!-- For list down all properties -->
-  <!--msbuild CXC.EligibilityXO.Build.proj /filelogger /fileLoggerParameters:Verbosity=diag-->
-  
-  <!--Microsoft logger-->
-  <!--msbuild CXC.EligibilityXO.Build.proj /fileLogger /fileLoggerParameters:LogFile=MyLog.log;-->
-  <!--msbuild CXC.EligibilityXO.Build.proj /fl1 /fl2 /fl3 /flp2:logfile=JustErrors.log;errorsonly /flp3:logfile=JustWarnings.log;warningsonly-->
-
   <!-- Region Import External target -->
 
   <Import Project="CXC.EligibilityXO.BuildTasks.tasks" />
@@ -228,11 +216,6 @@
     <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\config" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\config')"/>
     <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\layout" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\layout')"/>
     <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\sqls" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\sqls')"/>
-    
-
-    <!--<MakeDir Directories="$(BuildDirForTPAConfig)\$(TPAName)" Condition="!Exists('$(BuildDirForTPAConfig)\$(TPAName')"/>
-    <Message Text="Message: $(TPAName)"></Message>-->
-
 
   </Target>
 
@@ -573,21 +556,8 @@
       <BuildDirForDataSqlScript>%(SolutionName.BuildDirForDataSqlScript)</BuildDirForDataSqlScript>
     </PropertyGroup>
 
-
-     
-     <!--<MSBuild.ExtensionPack.FileSystem.RoboCopy
-      Source="$(SourceDirForMetaChangeScript)"
-      Destination="$(BuildDirForMetaSqlScript)"
-      Files="*.*"
-      Options="/E /XO" />-->
     <Exec Command='$(LibDir)\ContentSync.exe $(SourceDirForMetaChangeScript) $(BuildDirForMetaSqlScript) -c -u' />
 
-
-    <!--<MSBuild.ExtensionPack.FileSystem.RoboCopy
-      Source="$(SourceDirForDataChangeScript)"
-      Destination="$(BuildDirForDataSqlScript)"
-      Files="*.*"
-      Options="/E /XO" />-->
     <Exec Command='$(LibDir)\ContentSync.exe $(SourceDirForDataChangeScript) $(BuildDirForDataSqlScript) -c -u' />
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -608,20 +578,9 @@
       <CXCCoreMetaFiles Include="$(RootDirForSurceCode)\Core\Build\MetaChanges\**\*.*" />
     </ItemGroup>
 
-
-    <!--<Copy SourceFiles="@(CXCCoreSchemaChangesFiles)"
-          DestinationFolder="$(BuildDirForCXCCoreSchemaChangesSql)\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />-->
-
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Build\SchemaChanges $(BuildDirForCXCCoreSchemaChangesSql) -c -u' />
 
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Build\MetaChanges $(BuildDirForCXCCoreMetaChangesSql) -c -u' />
-
-
-    <!--<Copy SourceFiles="@(CXCCoreMetaFiles)"
-          DestinationFolder="$(BuildDirForCXCCoreMetaChangesSql)\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />-->
-
 
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -643,11 +602,6 @@
     </PropertyGroup>
 
 
-    <!--<MSBuild.ExtensionPack.FileSystem.RoboCopy 
-        Source="$(SourceDirForWorkflowFile)"
-        Destination="$(BuildDirForWorkflowScript)"
-        Files="*.*"
-        Options="/E /XO"/>-->
     <Exec Command='$(LibDir)\ContentSync.exe $(SourceDirForWorkflowFile) $(BuildDirForWorkflowScript) -c -u' />
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -875,14 +829,6 @@
 
     <Message Text = "Start copying files from $(BuildDirForApp) to $(DeploymentDirForApp)"></Message>
 
-     <!--<MSBuild.ExtensionPack.FileSystem.RoboCopy
-      Source="$(BuildDirForApp)"
-      Destination="$(DeploymentDirForApp)"
-      Files="*.*"
-      Options="/E /XO" />-->
-
-    <!--ContentSync.exe C:\Users\Manoj\OneDrive\Dev\For_2018.02.02_Release\CXC\CXCEngine\bin\Debug E:\1 -c -u-->
-
     <Exec Command='$(LibDir)\ContentSync.exe $(BuildDirForApp) $(DeploymentDirForApp) -c -u' />
 
     <Message Text = "Completed copying files from $(BuildDirForApp) to $(DeploymentDirForApp)"></Message>
@@ -908,10 +854,6 @@
 
     <Message Text = "Start copying files from $(BuildDirForDbDeployOutput) to $(DeploymentDirForDbDeploy)"></Message>
 
-    <!--<Copy SourceFiles="@(DbDeployFiles)"
-			  	DestinationFolder="$(DeploymentDirForDbDeploy)\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />-->
-    
     <Exec Command='$(LibDir)\ContentSync.exe $(BuildDirForDbDeployOutput) $(DeploymentDirForDbDeploy) -c -u' />
 
     <Message Text = "Completed copying files from $(BuildDirForDbDeployOutput) to $(DeploymentDirForDbDeploy)"></Message>
@@ -928,17 +870,9 @@
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!='CopyWorkflowScriptsToDeploymentDir'">CopyWorkflowScriptsToDeploymentDir</CurrentTargetName>
       <BuildDirForWorkflowScript>%(SolutionName.BuildDirForWorkflowScript)</BuildDirForWorkflowScript>
-      <!--<CommandAndSqlFilesDeploymentDir>%(SolutionName.CommandAndSqlFilesDeploymentDir)</CommandAndSqlFilesDeploymentDir>-->
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
-
-
-     <!--<MSBuild.ExtensionPack.FileSystem.RoboCopy
-      Source="$(BuildDirForWorkflowScript)"
-      Destination="$(DeploymentDirForApp)"
-      Files="*.*"
-      Options="/E /XO"/>-->
 
     <Exec Command='$(LibDir)\ContentSync.exe $(BuildDirForWorkflowScript) $(DeploymentDirForApp) -c -u' />
 
@@ -974,13 +908,7 @@
       <DeploymentAppDir Include="$(DeploymentDirForApp)\**\*.*" />
     </ItemGroup>
 
-    <!--<Copy SourceFiles="@(DeploymentAppDir)"
-			  	DestinationFolder="$(DestinationDir)\%(RecursiveDir)"
-          SkipUnchangedFiles="true" />-->
-
     <Exec Command='$(LibDir)\ContentSync.exe $(DeploymentDirForApp) $(DestinationDir) -c -u' />
-
-
 
     <Message Text = "Completed copying files from $(DeploymentDirForApp) to $(DestinationDir)"></Message>
 
@@ -1081,14 +1009,8 @@
 
   <Target Name="Run">
 
-    <!--<Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /fl1 /fl2 /flp1:logfile=$(LogFileName) /flp2:logfile=$(ErrorLogFileName);errorsonly;warningsonly "/>
-    
-    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /l:SecureFileLogger,$(LibDir)\MSBuild.Extension.Pack.1.8.0\tools\net40\MSBuild.ExtensionPack.Loggers.dll;logfile=$(LogFileName) "/>-->
-
     <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll;FromEmailAddress=alertsqa@cxcnetwork.com;ToEmailAddress=manojs@cxcnetwork.com /noconsolelogger "/>
-    
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
-
     
   </Target>
 
