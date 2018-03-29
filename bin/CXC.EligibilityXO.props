@@ -5,7 +5,7 @@
     <Environment>QA</Environment>
 
     <SvnUsername>mWDy4+hy5a+QwQ9N90SRXQ==</SvnUsername>
-    <SvnPassword>ILTltt0wGUTihZOjHu9rRw=</SvnPassword>
+    <SvnPassword>ILTltt0wGUTihZOjHu9rRw==</SvnPassword>
   </PropertyGroup>
 
 
@@ -64,7 +64,7 @@
 
     <BuildDirForApp>$(BuildDir)\$(AppFolderName)</BuildDirForApp>
     <BuildDirForWorkflowFiles>$(BuildDir)\$(WorkflowScriptFolderName)</BuildDirForWorkflowFiles>
-    <BuildDirForCommonWorkflowScript>$(BuildDirForWorkflowScript)\Common</BuildDirForCommonWorkflowScript>
+    <!--<BuildDirForCommonWorkflowScript>$(BuildDirForWorkflowScript)\Common</BuildDirForCommonWorkflowScript>-->
     <BuildDirForDbDeploy>$(BuildDir)\$(DbDeployScriptInputFolderName)</BuildDirForDbDeploy>
     <BuildDirForDbDeployOutput>$(BuildDir)\$(DbDeployScriptOutputFolderName)</BuildDirForDbDeployOutput>
     <BuildDirForConfig>$(BuildDirForApp)\config</BuildDirForConfig>
@@ -140,7 +140,7 @@
       
       <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges</BuildDirForDataSqlScript>
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges</BuildDirForMetaSqlScript>
-      <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
+      <BuildDirForWorkflowScript>$(BuildDir)\$(WorkflowScriptFolderName)\ABG</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
 
@@ -157,8 +157,8 @@
 
       <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges</BuildDirForDataSqlScript>
       <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges</BuildDirForMetaSqlScript>
-      
-      <BuildDirForWorkflowScript>$(BuildDirForApp)</BuildDirForWorkflowScript>
+
+      <BuildDirForWorkflowScript>$(BuildDir)\$(WorkflowScriptFolderName)\PrimePay</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
       

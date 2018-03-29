@@ -7,7 +7,6 @@
   <Import Project="CXC.EligibilityXO.Assembly.Version.Targets"/>
   <Import Project="CXC.EligibilityXO.DbDeploy.targets"/>
   <Import Project="CXC.EligibilityXO.Backup.targets"/>
-  <Import Project="CXC.EligibilityXO.EmailNotification.targets"/>
   
   <!-- EndRegion -->
 
@@ -163,6 +162,7 @@
     <MakeDir Directories="$(BuildDir)" Condition="!Exists('$(BuildDir)')"/>
     <MakeDir Directories="$(BuildDirForApp)" Condition="!Exists('$(BuildDirForApp)')"/>
     <MakeDir Directories="$(BuildDirForDbDeploy)" Condition="!Exists('$(BuildDirForDbDeploy)')"/>
+    <MakeDir Directories="$(BuildDirForWorkflowFiles)" Condition="!Exists('$(BuildDirForWorkflowFiles)')"/>
     <MakeDir Directories="$(BuildDirForConfig)" Condition="!Exists('$(BuildDirForConfig)')"/>
     <MakeDir Directories="$(BuildDirForSqls)" Condition="!Exists('$(BuildDirForSqls)')"/>
 
@@ -181,8 +181,6 @@
     <MakeDir Directories="$(BuildDirForCXCCoreMetaChangesSql)" Condition="!Exists('$(BuildDirForCXCCoreMetaChangesSql)')"/>
 
 
-    <!-- Need to reomve this command once we have seperate script folder for each TPA -->
-    <MakeDir Directories="$(BuildDirForWorkflowScript)\Common" Condition="!Exists('$(BuildDirForWorkflowScript)\Common')" />
 
 
 
@@ -211,7 +209,7 @@
 
 
     <!-- Below commands creates folder structure in build directory for each TPA  -->
-    <MakeDir Directories="$(BuildDirForWorkflowScript)\$(TPAName)" Condition="!Exists('$(BuildDirForWorkflowScript)\$(TPAName')"/>
+    <MakeDir Directories="$(BuildDirForWorkflowFiles)\$(TPAName)" Condition="!Exists('$(BuildDirForWorkflowFiles)\$(TPAName')"/>
 
     <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\config" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\config')"/>
     <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\layout" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\layout')"/>
