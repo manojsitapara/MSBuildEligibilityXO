@@ -3,18 +3,18 @@
 
   <PropertyGroup>
 
-    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligbilityXO/trunk/</SVNSourceURL>
-    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligbilityXO/tags</SVNTagURL>
+    <SVNSourceURL>https://DESKTOP-JQA6P9F:440/svn/EligibilityXO/branches/EligibilityXOWithGDI</SVNSourceURL>
+    <SVNTagURL>https://DESKTOP-JQA6P9F:440/svn/EligibilityXO/tags</SVNTagURL>
     <!--<SVNSourceURL>https://svn.cxcnetwork.com/svn/EligibilityXO/branches/TestBuild/</SVNSourceURL>
     <SVNTagURL>https://svn.cxcnetwork.com/svn/EligibilityXO/tags</SVNTagURL>-->
 
     <!-- MSBuild script folder structure settings -->
 
     <!-- Specify the root directory to create msbuild script folder structure -->
-    <RootDir>E:\MSBuildTesting_fromCXCSVN1\QA</RootDir>
+    <RootDir>E:\MSBuildTesting\EligibilityXOWithGDI</RootDir>
 
     <!-- Specify the path to push build on target server -->
-    <DestinationDir>E:\MSBuildTesting_fromCXCSVN1\QA\QAServer</DestinationDir>
+    <DestinationDir>E:\MSBuildTesting\EligibilityXOWithGDI\QAServer</DestinationDir>
 
     <!-- To download source code from SVN, set value to true else false -->
     <DownloadSourceCodeFromSVN>true</DownloadSourceCodeFromSVN>
@@ -28,6 +28,8 @@
     <BuildABG>true</BuildABG>
     <!-- To build PrimePay solution, set value to true -->
     <BuildPrimePay>true</BuildPrimePay>
+    <!-- To build GDI solution, set value to true -->
+    <BuildGDI>true</BuildGDI>
     <!--Set value true to take database backup else false -->
     <BackupDatabase>true</BackupDatabase>
     <!-- Set UpdateBuildVersion value true to update build version number else set false -->
@@ -51,21 +53,22 @@
     <!--Sql server settings -->
 
     <!--Set value to true, if windows authentication required-->
-    <IsSqlWindowsAuthentication>true</IsSqlWindowsAuthentication>
+    <IsSqlWindowsAuthentication>false</IsSqlWindowsAuthentication>
     <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
-    <SqlServerVersion>2012</SqlServerVersion>
+    <SqlServerVersion>2014</SqlServerVersion>
     <!--Specify Sql server name-->
     <SqlServerName>C6yt9c6/EWmWT62MOcWSTQ==</SqlServerName>
 
     <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false, else keep empty -->
     <!--4cZZdPhKttntu1j59ka/qw==-->
-    <SqlServerUserName></SqlServerUserName>
+    <SqlServerUserName>90GqeL/11Q1f9d+DlZFFNg==</SqlServerUserName>
     <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
     <!--M9xUe6A9Al+OsrB3va5GOw==-->
-    <SqlServerPassword></SqlServerPassword>
+    <SqlServerPassword>yj7iZ/96Q8zi6Isn4XkV5g==</SqlServerPassword>
 
     <!--specify database name -->
-    <ApplicationDatabaseName>MZcd8zV7Mf6bZuRJKFs+CYDPFCzjYAdA2fho9VQjJzg=</ApplicationDatabaseName>
+    <ApplicationDatabaseName>BWcHq975PCspJW+/5L9Xs0StTYiMZ5Q0ekQihH6SvFM=</ApplicationDatabaseName>
+
     
     
 

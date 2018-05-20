@@ -71,7 +71,7 @@
     <BuildDirForSqls>$(BuildDirForApp)\sqls</BuildDirForSqls>
 
     <DbDeployDatabaseName>BtAP3+rnpGUbBZXg7uCgig==</DbDeployDatabaseName>
-    <DatabaseChangeLogTableName>19zWIdVKzM8d9MdRO++PpwuQfWQrG3+Y+DqTAsYogz4=</DatabaseChangeLogTableName>
+    <DatabaseChangeLogTableName>hFSSLVd6+sBME+yb6K8kKaX0iMrIxLryZHuT39UQqb8=</DatabaseChangeLogTableName>
     <DeploymentDirForApp>$(DeploymentDir)\$(AppFolderName)</DeploymentDirForApp>
     <DeploymentDirForDbDeploy>$(DeploymentDir)\$(DbDeployScriptFolderName)</DeploymentDirForDbDeploy>
     
@@ -163,6 +163,24 @@
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
       
     </SolutionName>
+
+
+    <SolutionName Include="$(RootDirForSurceCode)\TPA\GDI\CXC.EligibilityXO.TPA.GDI.sln"  Condition="$(BuildGDI)=='true' ">
+
+      <TPAName>GDI</TPAName>
+
+      <SourceDirForMetaChangeScript>$(RootDirForSurceCode)\TPA\GDI\Build\MetaChanges</SourceDirForMetaChangeScript>
+      <SourceDirForDataChangeScript>$(RootDirForSurceCode)\TPA\GDI\Build\DataChanges</SourceDirForDataChangeScript>
+      <SourceDirForWorkflowScript>$(RootDirForSurceCode)\TPA\GDI\Scripts</SourceDirForWorkflowScript>
+
+      <BuildDirForDataSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\GDI\3.GDI_DataChanges</BuildDirForDataSqlScript>
+      <BuildDirForMetaSqlScript>$(BuildDir)\$(DbDeployScriptInputFolderName)\GDI\4.GDI_MetaChanges</BuildDirForMetaSqlScript>
+      <BuildDirForWorkflowScript>$(BuildDir)\$(WorkflowScriptFolderName)\GDI</BuildDirForWorkflowScript>
+
+      <BuildDirForStateParamXmlFile>$(BuildDirForApp)\GDI\config\StateParams.xml</BuildDirForStateParamXmlFile>
+
+    </SolutionName>
+    
 
   </ItemGroup>
  
