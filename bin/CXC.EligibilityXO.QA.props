@@ -14,7 +14,7 @@
     <RootDir>E:\MSBuildTesting\EligibilityXOWithGDI</RootDir>
 
     <!-- Specify the path to push build on target server -->
-    <DestinationDir>\\Laptop-6rnn5soj\E\RemoteTesting\QAServer</DestinationDir>
+    <DestinationDir>E:\MSBuildTesting\EligibilityXOWithGDI\QAServer</DestinationDir>
 
     <!-- To download source code from SVN, set value to true else false -->
     <DownloadSourceCodeFromSVN>true</DownloadSourceCodeFromSVN>
