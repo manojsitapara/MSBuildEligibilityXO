@@ -440,7 +440,7 @@
 
 
 
-  <Target Name="BuildEligibilityXOEngine">
+  <Target Name="BuildEligibilityXOEngine" Condition="$(BuildEligibilityXOEngine) == 'true' ">
 
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildEligibilityXOEngine'">BuildEligibilityXOEngine</CurrentTargetName>
