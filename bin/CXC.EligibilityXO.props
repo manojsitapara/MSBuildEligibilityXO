@@ -144,20 +144,10 @@
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\ABG\config\StateParams.xml</BuildDirForStateParamXmlFile>
 
-      <RootDirForConfigFiles>$(RootDirForSurceCode)\TPA\ABG\Config</RootDirForConfigFiles>
-      <RootDirForLayoutFiles>$(RootDirForSurceCode)\TPA\ABG\layout</RootDirForLayoutFiles>
-
-
-      <BuildDirForConfigFiles>$(BuildDirForApp)\ABG\Config</BuildDirForConfigFiles>
-      <BuildDirForLayoutFiles>$(BuildDirForApp)\ABG\layout</BuildDirForLayoutFiles>
-
-
-
-
     </SolutionName>
 
     
-    <SolutionName Include="$(RootDirForSurceCode)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
+    <SolutionName Include="$(RootDirForSurceCode)\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
       
       <TPAName>PrimePay</TPAName>
 
@@ -171,16 +161,7 @@
       <BuildDirForWorkflowScript>$(BuildDir)\$(WorkflowScriptFolderName)\PrimePay</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\PrimePay\config\StateParams.xml</BuildDirForStateParamXmlFile>
-
-      <RootDirForConfigFiles>$(RootDirForSurceCode)\TPA\PrimePay\Config</RootDirForConfigFiles>
-      <RootDirForLayoutFiles>$(RootDirForSurceCode)\TPA\PrimePay\layout</RootDirForLayoutFiles>
-
-
-      <BuildDirForConfigFiles>$(BuildDirForApp)\PrimePay\Config</BuildDirForConfigFiles>
-      <BuildDirForLayoutFiles>$(BuildDirForApp)\PrimePay\layout</BuildDirForLayoutFiles>
-
-
-
+      
     </SolutionName>
 
 
@@ -197,13 +178,6 @@
       <BuildDirForWorkflowScript>$(BuildDir)\$(WorkflowScriptFolderName)\GDI</BuildDirForWorkflowScript>
 
       <BuildDirForStateParamXmlFile>$(BuildDirForApp)\GDI\config\StateParams.xml</BuildDirForStateParamXmlFile>
-
-      <RootDirForConfigFiles>$(RootDirForSurceCode)\TPA\GDI\Config</RootDirForConfigFiles>
-      <RootDirForLayoutFiles>$(RootDirForSurceCode)\TPA\GDI\layout</RootDirForLayoutFiles>
-
-
-      <BuildDirForConfigFiles>$(BuildDirForApp)\GDI\Config</BuildDirForConfigFiles>
-      <BuildDirForLayoutFiles>$(BuildDirForApp)\GDI\layout</BuildDirForLayoutFiles>
 
     </SolutionName>
     

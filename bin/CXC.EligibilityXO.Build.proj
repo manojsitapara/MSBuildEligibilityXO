@@ -192,9 +192,17 @@
     </PropertyGroup>
 
 
-    <MakeDir Directories="%(SolutionName.BuildDirForDataSqlScript)" Condition="!Exists('%(SolutionName.BuildDirForDataSqlScript)')"/>
-    <MakeDir Directories="%(SolutionName.BuildDirForMetaSqlScript)" Condition="!Exists('%(SolutionName.BuildDirForMetaSqlScript)')"/>
+    <!-- Below commands creates folder structure for each TPA  -->
+    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\4.$(TPAName)_MetaChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\4.$(TPAName)_MetaChanges')"/>
+    <MakeDir Directories="$(BuildDirForDbDeploy)\$(TPAName)\3.$(TPAName)_DataChanges" Condition="!Exists('$(BuildDirForDbDeploy)\$(TPAName)\3.$(TPAName)_DataChanges')"/>
 
+
+    <!-- Below commands creates folder structure in build directory for each TPA  -->
+    <MakeDir Directories="$(BuildDirForWorkflowFiles)\$(TPAName)" Condition="!Exists('$(BuildDirForWorkflowFiles)\$(TPAName')"/>
+
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\config" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\config')"/>
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\layout" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\layout')"/>
+    <MakeDir Directories="$(BuildDirForApp)\$(TPAName)\sqls" Condition="!Exists('$(BuildDirForApp)\$(TPAName)\sqls')"/>
 
   </Target>
 
@@ -376,13 +384,13 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingTPASolution"></CallTarget>
+    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingABGSolution"></CallTarget>
     <CallTarget Targets="BuildABGSolution"></CallTarget>
 
-    <!--<CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingPrimePaySolution"></CallTarget>-->
+    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingPrimePaySolution"></CallTarget>
     <CallTarget Targets="BuildPrimePaySolution"></CallTarget>
 
-    <!--<CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingGDISolution"></CallTarget>-->
+    <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingGDISolution"></CallTarget>
     <CallTarget Targets="BuildGDISolution"></CallTarget>
 
 
@@ -457,12 +465,33 @@
 
   </Target>
 
-  <Target Name="CopyConfigAndSqlFilesBeforeBuildingTPASolution" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+  <Target Name="CopyConfigAndSqlFilesBeforeBuildingABGSolution" Condition="$(BuildABG)=='true'">
 
-    <Exec Command='$(LibDir)\ContentSync.exe %(SolutionName.RootDirForConfigFiles) %(SolutionName.BuildDirForConfigFiles) -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe %(SolutionName.RootDirForLayoutFiles) %(SolutionName.BuildDirForLayoutFiles) -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe %(SolutionName.SourceDirForDataChangeScript) %(SolutionName.BuildDirForDataSqlScript) -c -u' />
-    <Exec Command='$(LibDir)\ContentSync.exe %(SolutionName.SourceDirForMetaChangeScript) %(SolutionName.BuildDirForMetaSqlScript) -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Config $(BuildDirForApp)\ABG\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\layout $(BuildDirForApp)\ABG\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\3.ABG_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\ABG\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\ABG\4.ABG_MetaChanges -c -u' />
+
+  </Target>
+
+  <Target Name="CopyConfigAndSqlFilesBeforeBuildingPrimePaySolution" Condition="$(BuildPrimePay)=='true'">
+
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Config $(BuildDirForApp)\PrimePay\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\layout $(BuildDirForApp)\PrimePay\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\3.PrimePay_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\PrimePay\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\PrimePay\4.PrimePay_MetaChanges -c -u' />
+
+
+  </Target>
+
+
+
+  <Target Name="CopyConfigAndSqlFilesBeforeBuildingGDISolution" Condition="$(BuildGDI)=='true'">
+
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\GDI\Config $(BuildDirForApp)\GDI\Config -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\GDI\layout $(BuildDirForApp)\GDI\layout -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\GDI\Build\DataChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\GDI\3.GDI_DataChanges -c -u' />
+    <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\TPA\GDI\Build\MetaChanges $(BuildDir)\$(DbDeployScriptInputFolderName)\GDI\4.GDI_MetaChanges -c -u' />
 
   </Target>
 
