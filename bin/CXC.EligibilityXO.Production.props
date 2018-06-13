@@ -10,7 +10,8 @@
 
     <!-- Specify the root directory to create msbuild script folder structure -->
     <RootDir>E:\MSBuildTesting_fromCXCSVN1\QA</RootDir>
-
+    <!--Database Backup Directory-->
+    <DatabaseBackupDir></DatabaseBackupDir>
     <!-- Specify the path to copy build code on server -->
     <DestinationDir>E:\MSBuildTesting_fromCXCSVN1\QA\QAServer</DestinationDir>
 

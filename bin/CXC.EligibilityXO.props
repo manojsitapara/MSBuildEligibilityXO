@@ -48,7 +48,7 @@
     <!-- Specify the path to backup of deployment code -->
     <BackupDirForDeployment>$(BackupDir)\Deployment</BackupDirForDeployment>
     <!-- Specify the path to backup of database -->
-    <BackupDirForDatabase>$(BackupDir)\Database</BackupDirForDatabase>
+    <BackupDirForDatabase>$(DatabaseBackupDir)</BackupDirForDatabase>
     <!-- Specify the path to back up build code on server -->
     <BackupDirForDestination>$(BackupDir)\Destination</BackupDirForDestination>
 
@@ -147,7 +147,7 @@
     </SolutionName>
 
     
-    <SolutionName Include="$(RootDirForSurceCode)\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
+    <SolutionName Include="$(RootDirForSurceCode)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"  Condition="$(BuildPrimePay)=='true' ">
       
       <TPAName>PrimePay</TPAName>
 
