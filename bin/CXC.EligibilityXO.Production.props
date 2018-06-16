@@ -3,17 +3,17 @@
 
   <PropertyGroup>
 
-    <SVNSourceURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/trunk/</SVNSourceURL>
-    <SVNTagURL>https://LAPTOP-L6J610L5:4443/svn/EligibilityXO/tags</SVNTagURL>
+    <SVNSourceURL>https://DESKTOP-JQA6P9F:440/svn/EligibilityXO/trunk/src</SVNSourceURL>
+    <SVNTagURL>https://DESKTOP-JQA6P9F:440/svn/EligibilityXO/tags</SVNTagURL>
     
     <!-- MSBuild script folder structure settings -->
 
     <!-- Specify the root directory to create msbuild script folder structure -->
-    <RootDir>E:\MSBuildTesting_fromCXCSVN1\QA</RootDir>
+    <RootDir>E:\MSBuildTestingProduction\QA</RootDir>
     <!--Database Backup Directory-->
-    <DatabaseBackupDir></DatabaseBackupDir>
+    <DatabaseBackupDir>E:\MSBuildTestingProduction\QA</DatabaseBackupDir>
     <!-- Specify the path to copy build code on server -->
-    <DestinationDir>E:\MSBuildTesting_fromCXCSVN1\QA\QAServer</DestinationDir>
+    <DestinationDir>E:\MSBuildTestingProduction\QA\QAServer</DestinationDir>
 
     <!-- Source code SVN settings -->
 
@@ -54,23 +54,25 @@
     <!--Sql server settings -->
 
     <!--Set value to true, if windows authentication required-->
-    <IsSqlWindowsAuthentication>true</IsSqlWindowsAuthentication>
-    <!--Specify Sql server Version e.g. 2008, 2012 or 2014 so as to use appropriate msbuild.extension.sqlpack -->
-    <SqlServerVersion>2012</SqlServerVersion>
+    <IsSqlWindowsAuthentication>false</IsSqlWindowsAuthentication>
+    <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
+    <SqlServerVersion>2014</SqlServerVersion>
     <!--Specify Sql server name-->
-    <SqlServerName>zy2/4mJJ+5XIiRp2pg2S7w==</SqlServerName>
+    <SqlServerName>C6yt9c6/EWmWT62MOcWSTQ==</SqlServerName>
 
+    <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false, else keep empty -->
+    <!--4cZZdPhKttntu1j59ka/qw==-->
+    <SqlServerUserName>90GqeL/11Q1f9d+DlZFFNg==</SqlServerUserName>
     <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
-    <SqlServerUserName>4cZZdPhKttntu1j59ka/qw==</SqlServerUserName>
-    <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
-    <SqlServerPassword>M9xUe6A9Al+OsrB3va5GOw==</SqlServerPassword>
+    <!--M9xUe6A9Al+OsrB3va5GOw==-->
+    <SqlServerPassword>yj7iZ/96Q8zi6Isn4XkV5g==</SqlServerPassword>
 
     <!--specify database name -->
-    <ApplicationDatabaseName>iyDrR7CZedn6n1Yg6U3Knsfr5MZAAIwhDOQqI073zjU=</ApplicationDatabaseName>
+    <ApplicationDatabaseName>BWcHq975PCspJW+/5L9Xs0StTYiMZ5Q0ekQihH6SvFM=</ApplicationDatabaseName>
 
 
-    
-    
+
+
     <!--Specify TO email address to send error email notification -->
     <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
 

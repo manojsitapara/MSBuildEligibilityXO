@@ -17,7 +17,7 @@
   </ItemGroup>
 
 
-  <Target Name="Init">
+ <Target Name="Init">
 
     <PropertyGroup>
       <CurrentTargetName>Init</CurrentTargetName>
@@ -224,13 +224,6 @@
       <Output TaskParameter="Lines" PropertyName="DecryptSVNPassword" />
     </ReadLinesFromFile>
 
-    <!-- Removing unnecessary new line and extar space, by default ExecuteRawReader return space and new line in output-->
-    <!--<PropertyGroup>
-      <UserName>$([System.Text.RegularExpressions.Regex]::Replace( $(UserName), '\s+', '') )</UserName>
-      <Password>$([System.Text.RegularExpressions.Regex]::Replace( $(Password), '\s+', '') )</Password>
-    </PropertyGroup>-->
-
-
     <SvnCheckout  RepositoryPath="$(SVNSourceURL)"
 			            LocalPath="$(SourceDir)"
 			            UserName="$(DecryptSVNUserName)"
@@ -250,15 +243,9 @@
 
     <ItemGroup>
 
-      <CXCCoreSolution Include="$(RootDirForSurceCode)\Core\CXC.EligibilityXO.Core.csproj"></CXCCoreSolution>
-      <CXCCoreCSharpFiles Include="$(RootDirForSurceCode)\Core\**\*.cs"></CXCCoreCSharpFiles>
-      <CXCCoreAssemblyFileName Include="$(RootDirForSurceCode)\Core\Bin\Release\CXC.EligibilityXO.Core.dll"></CXCCoreAssemblyFileName>
-
-
-      <CXCEngineSolution Include="$(RootDirForSurceCode)\Engine\CXC.EligibilityXO.Engine.csproj"></CXCEngineSolution>
-      <CXCEngineCSharpFiles Include="$(RootDirForSurceCode)\Engine\**\*.cs"></CXCEngineCSharpFiles>
-      <CXCEngineAssemblyFileName Include="$(RootDirForSurceCode)\Engine\Bin\Release\CXC.EligibilityXO.Engine.exe"></CXCEngineAssemblyFileName>
-
+      <CXCEngineSolution Include="$(RootDirForSurceCode)\CXC.EligibilityXO.sln"></CXCEngineSolution>
+      <CXCEngineCSharpFiles Include="$(RootDirForSurceCode)\**\*.cs"></CXCEngineCSharpFiles>
+      <CXCEngineAssemblyFileName Include="$(RootDirForSurceCode)\Engine\Bin\Release\CXC.EligibilityXO.Engine.exe;$(RootDirForSurceCode)\Core\Bin\Release\CXC.EligibilityXO.Core.dll"></CXCEngineAssemblyFileName>
 
       <ABGSolutionFile Include="$(RootDirForSurceCode)\TPA\ABG\CXC.EligibilityXO.TPA.ABG.sln"></ABGSolutionFile>
       <ABGCSharpFiles Include="$(RootDirForSurceCode)\TPA\ABG\**\*.cs"></ABGCSharpFiles>
@@ -267,8 +254,6 @@
       <PrimePaySolution Include="$(RootDirForSurceCode)\TPA\PrimePay\CXC.EligibilityXO.TPA.PrimePay.sln"></PrimePaySolution>
       <PrimePayCSharpFiles Include="$(RootDirForSurceCode)\TPA\PrimePay\**\*.cs"></PrimePayCSharpFiles>
       <PrimePayAssemblyFile Include="$(RootDirForSurceCode)\TPA\PrimePay\Bin\Release\CXC.EligibilityXO.TPA.PrimePay.dll"></PrimePayAssemblyFile>
-
-
 
       <GDISolutionFile Include="$(RootDirForSurceCode)\TPA\GDI\CXC.EligibilityXO.TPA.GDI.sln"></GDISolutionFile>
       <GDICSharpFiles Include="$(RootDirForSurceCode)\TPA\GDI\**\*.cs"></GDICSharpFiles>
@@ -393,52 +378,9 @@
     <CallTarget Targets="CopyConfigAndSqlFilesBeforeBuildingGDISolution"></CallTarget>
     <CallTarget Targets="BuildGDISolution"></CallTarget>
 
-
-
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
-
-
   </Target>
-
-
-  <Target Name="BuildCXCCoreSolution" Inputs="@(CXCCoreCSharpFiles)" Outputs="@(CXCCoreAssemblyFileName)">
-
-    <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildCXCCoreSolution'">BuildCXCCoreSolution</CurrentTargetName>
-    </PropertyGroup>
-
-    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
-
-    <MSBuild Projects="@(CXCCoreSolution)"
-             Properties="@(UpdateAssemblyVersionTarget)" />
-
-    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
-
-
-
-  </Target>
-
-
-  <Target Name="BuildCXCEngineSolution" Inputs="@(CXCEngineCSharpFiles)" Outputs="@(CXCEngineAssemblyFileName)">
-
-    <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BuildCXCEngineSolution'">BuildCXCEngineSolution</CurrentTargetName>
-    </PropertyGroup>
-
-    <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
-
-    <MSBuild Projects="@(CXCEngineSolution)"
-             Properties="@(UpdateAssemblyVersionTarget)" />
-
-    <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
-
-
-
-  </Target>
-
-
-
 
   <Target Name="BuildEligibilityXOEngine" Condition="$(BuildEligibilityXOEngine) == 'true' ">
 
@@ -448,8 +390,8 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-    <CallTarget Targets="BuildCXCCoreSolution"></CallTarget>
-    <CallTarget Targets="BuildCXCEngineSolution"></CallTarget>
+    <MSBuild Projects="@(CXCEngineSolution)"
+             Properties="@(UpdateAssemblyVersionTarget)" />
 
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Config $(BuildDirForConfig) -c -u' />
     <Exec Command='$(LibDir)\ContentSync.exe $(RootDirForSurceCode)\Core\Build\SchemaChanges $(BuildDirForCXCCoreSchemaChangesSql) -c -u' />
@@ -458,12 +400,9 @@
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
-
-
-
-
-
   </Target>
+
+
 
   <Target Name="CopyConfigAndSqlFilesBeforeBuildingABGSolution" Condition="$(BuildABG)=='true'">
 
@@ -687,13 +626,13 @@
 
 
     <XmlPreprocess
-      ToolPath="$(LibDir)"
-      InputFiles="$(BuildDirForApp)\config\DataAccess.xml"
-      OutputFiles="$(BuildDirForApp)\config\DataAccess.xml"
-      SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
-      Environment="$(Environment)"
-  	  Clean="$(XmlPreprocessorCleanFile)"
-	    Validate="$(XmlPreprocessorValidateFile)" />
+        ToolPath="$(LibDir)"
+        InputFiles="$(BuildDirForApp)\config\DataAccess.xml"
+        OutputFiles="$(BuildDirForApp)\config\DataAccess.xml"
+        SpreadsheetFiles="$(ConfigValuesSpreadsheetFileLocation)"
+        Environment="$(Environment)"
+  	    Clean="$(XmlPreprocessorCleanFile)"
+	      Validate="$(XmlPreprocessorValidateFile)" />
 
 
     <XmlPreprocess
@@ -799,8 +738,6 @@
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
-
-
   </Target>
 
 
@@ -827,8 +764,6 @@
       Username="$(SvnUsername)" password="$(SvnPassword)"/>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
-
-
 
   </Target>
 
@@ -1034,11 +969,11 @@
 
 
   <Target Name="Run">
-
-    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll;FromEmailAddress=alertsqa@cxcnetwork.com;ToEmailAddress=manojs@cxcnetwork.com  "/>
+    
+    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll;FromEmailAddress=$(EmailNotificationFromAddress);ToEmailAddress=$(ErrorNotificationToAddress)  "/>
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
-   
 
+    
 
   </Target>
 

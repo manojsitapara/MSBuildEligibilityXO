@@ -1,2 +1,2 @@
-Create database using EligibilityXO_DB_Create.sql
+Create database using Initial_EligibilityXO_DB_Create.sql
 Create changelog table using CreateTable_Insert_Data_For_Changelog_Table.sql in MsBuildDbDeploy database
