@@ -301,7 +301,7 @@
 
 
     <CallTarget Targets="GetNewAssemblyVersionNumberFromDatabase" Condition="$(AssemblyBuildNumber)== '' "></CallTarget>
-    <CallTarget Targets="WriteAssemblyVersionNumberIntoTempFile" Condition="$(AssemblyBuildNumber) != '' " ></CallTarget>
+    <CallTarget Targets="GetNewAssemblyVersionNumberFromPropsFile" Condition="$(AssemblyBuildNumber) != '' " ></CallTarget>
 
 
   </Target>
@@ -328,7 +328,7 @@
       <Output PropertyName="NewAssemblyVersion" TaskParameter="NewAssemblyVersion"/>
     </GenerateNewAssemblyVersionNumber>
 
-    <Message Text="Setting new assembly version number: $(NewAssemblyVersion)"></Message>
+    <Message Text="Saving new version number $(NewAssemblyVersion) in temp file"></Message>
 
     <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(NewAssemblyVersion)" Overwrite="true"/>
 
@@ -340,11 +340,11 @@
 
   </Target>
 
-  <Target Name="WriteAssemblyVersionNumberIntoTempFile">
+  <Target Name="GetNewAssemblyVersionNumberFromPropsFile">
 
     <!--NOTE: This target will get assembly version number from  environment specific props file and write it on tempAssemblyFile for next step use. -->
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">WriteAssemblyVersionNumberIntoTempFile</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">GetNewAssemblyVersionNumberFromPropsFile</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
