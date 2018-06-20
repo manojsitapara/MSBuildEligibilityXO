@@ -285,7 +285,7 @@
     <CallTarget Targets="CopySqlFilesToBuildDir" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
     <CallTarget Targets="CopyWorkFlowScriptToBuildDir" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
 
-    <CallTarget Targets="ConfigTransformation" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
+    <CallTarget Targets="TransformConfigFile" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
 
     <CallTarget Targets="GenerateSqlScriptFromDbDeploy" Condition=" $(MSBuildLastTaskResult) == 'True'  " />
 
@@ -351,7 +351,7 @@
 
     <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(AssemblyBuildNumber)" Overwrite="true"/>
 
-    <Message Text="Setting new assembly version number: $(AssemblyBuildNumber)"></Message>
+    <Message Text="Saving new version number $(AssemblyBuildNumber) in temp file"></Message>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -576,10 +576,10 @@
 
 
 
-  <Target Name="ConfigTransformation">
+  <Target Name="TransformConfigFile">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTransformation'">ConfigTransformation</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TransformConfigFile'">TransformConfigFile</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
