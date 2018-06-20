@@ -9,10 +9,10 @@
   </PropertyGroup>
 
   
-  <Target Name="BackupPreBuildDatabase" Condition="$(BackupDatabase) == 'true' ">
+  <Target Name="BackupDatabasePreBuild" Condition="$(BackupDatabase) == 'true' ">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupPreBuildDatabase'">BackupPreBuildDatabase</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='BackupDatabasePreBuild'">BackupDatabasePreBuild</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />

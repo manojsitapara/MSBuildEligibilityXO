@@ -267,7 +267,7 @@
 
   <Target Name="BackupPreBuild">
 
-    <CallTarget Targets="BackupPreBuildDatabase" />
+    <CallTarget Targets="BackupDatabasePreBuild" />
     <CallTarget Targets="BackupPreBuildDestination" />
     <CallTarget Targets="BackupPreBuildSource" />
 
