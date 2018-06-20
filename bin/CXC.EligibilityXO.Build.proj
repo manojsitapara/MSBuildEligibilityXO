@@ -206,10 +206,10 @@
 
   </Target>
 
-  <Target Name="DownloadPreBuildSourceFromSVN" Condition="$(DownloadSourceCodeFromSVN) == 'true' ">
+  <Target Name="DownloadSourceFromSVNPreBuild" Condition="$(DownloadSourceCodeFromSVN) == 'true' ">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='DownloadPreBuildSourceFromSVN'">DownloadPreBuildSourceFromSVN</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='DownloadSourceFromSVNPreBuild'">DownloadSourceFromSVNPreBuild</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
@@ -955,7 +955,7 @@
 
     <CallTarget Targets="CreateFolderStructure" Condition="$(OnlyBuildOrOnlyPush) != 'onlypush' " />
 
-    <CallTarget Targets="DownloadPreBuildSourceFromSVN" Condition="$(MSBuildLastTaskResult) == 'True' and $(OnlyBuildOrOnlyPush) != 'onlypush' "/>
+    <CallTarget Targets="DownloadSourceFromSVNPreBuild" Condition="$(MSBuildLastTaskResult) == 'True' and $(OnlyBuildOrOnlyPush) != 'onlypush' "/>
 
     <CallTarget Targets="BackupPreBuild" Condition="$(MSBuildLastTaskResult) == 'True' and $(OnlyBuildOrOnlyPush) != 'onlypush' "></CallTarget>
 
