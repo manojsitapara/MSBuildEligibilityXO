@@ -330,7 +330,7 @@
 
     <Message Text="Saving new version number $(NewAssemblyVersion) in temp file"></Message>
 
-    <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(NewAssemblyVersion)" Overwrite="true"/>
+    <WriteLinesToFile File="$(TempVersionFile)" Lines="$(NewAssemblyVersion)" Overwrite="true"/>
 
 
 
@@ -342,14 +342,14 @@
 
   <Target Name="GetNewAssemblyVersionNumberFromPropsFile">
 
-    <!--NOTE: This target will get assembly version number from  environment specific props file and write it on tempAssemblyFile for next step use. -->
+    <!--NOTE: This target will get assembly version number from  environment specific props file and write it on TempVersionFile for next step use. -->
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!=''">GetNewAssemblyVersionNumberFromPropsFile</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-    <WriteLinesToFile File="$(TempAssemblyFile)" Lines="$(AssemblyBuildNumber)" Overwrite="true"/>
+    <WriteLinesToFile File="$(TempVersionFile)" Lines="$(AssemblyBuildNumber)" Overwrite="true"/>
 
     <Message Text="Saving new version number $(AssemblyBuildNumber) in temp file"></Message>
 
