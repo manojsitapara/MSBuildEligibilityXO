@@ -268,8 +268,8 @@
   <Target Name="BackupPreBuild">
 
     <CallTarget Targets="BackupDatabasePreBuild" />
-    <CallTarget Targets="BackupPreBuildDestination" />
-    <CallTarget Targets="BackupPreBuildSource" />
+    <CallTarget Targets="BackupDestinationPreBuild" />
+    <CallTarget Targets="BackupSourcePreBuild" />
 
   </Target>
 
@@ -775,7 +775,7 @@
     <CallTarget Targets="CopyBuildFilesToDeploymentDir"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
     <CallTarget Targets="CopyDbDeployOutputFilesToDeploymentDir" Condition="$(MSBuildLastTaskResult) == 'True' "/>
     <CallTarget Targets="CopyWorkflowScriptsToDeploymentDir"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
-    <CallTarget Targets="BackupPostBuildDeployment"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
+    <CallTarget Targets="BackupDeploymentPostBuild"  Condition="$(MSBuildLastTaskResult) == 'True' "/>
 
   </Target>
 
