@@ -2,10 +2,10 @@
   
   
   <PropertyGroup>
-    <BackupPreBuildDatabaseFile>$(BackupDirForDatabase)\EligibilityXO_PreBuild_$(CurrentDateTime).bak</BackupPreBuildDatabaseFile>
-    <BackupPreBuildSourceFile>$(BackupDirForSource)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildSourceFile>
-    <BackupPostBuildDeploymentFile>$(BackupDirForDeployment)\EligibilityXO_PostBuild_$(CurrentDateTime).zip</BackupPostBuildDeploymentFile>
-    <BackupPreBuildDestinationFile>$(BackupDirForDestination)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupPreBuildDestinationFile>
+    <BackupDatabaseFilePreBuild>$(BackupDirForDatabase)\EligibilityXO_PreBuild_$(CurrentDateTime).bak</BackupDatabaseFilePreBuild>
+    <BackupSourceFilePreBuild>$(BackupDirForSource)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupSourceFilePreBuild>
+    <BackupDeploymentFilePostBuild>$(BackupDirForDeployment)\EligibilityXO_PostBuild_$(CurrentDateTime).zip</BackupDeploymentFilePostBuild>
+    <BackupDestinationFilePreBuild>$(BackupDirForDestination)\EligibilityXO_PreBuild_$(CurrentDateTime).zip</BackupDestinationFilePreBuild>
   </PropertyGroup>
 
   
@@ -42,7 +42,7 @@
       MachineName="$(DecryptSqlServerName)"
       UserName="$(DecryptSqlServerUserName)"
       UserPassword="$(DecryptSqlServerPassword)"
-      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+      DataFilePath="$(BackupDatabaseFilePreBuild)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -67,7 +67,7 @@
       MachineName="$(DecryptSqlServerName)"
       UserName="$(DecryptSqlServerUserName)"
       UserPassword="$(DecryptSqlServerPassword)"
-      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+      DataFilePath="$(BackupDatabaseFilePreBuild)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -92,7 +92,7 @@
       MachineName="$(DecryptSqlServerName)"
       UserName="$(DecryptSqlServerUserName)"
       UserPassword="$(DecryptSqlServerPassword)"
-      DataFilePath="$(BackupPreBuildDatabaseFile)" />
+      DataFilePath="$(BackupDatabaseFilePreBuild)" />
     <Message Text="Database backup has been sucessfully completed at this location: $(BackupDirForDatabase)"></Message>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
@@ -115,8 +115,8 @@
     <MSBuild.ExtensionPack.Compression.Zip
       TaskAction="Create"
       CompressPath="$(SourceDir)"
-      ZipFileName="$(BackupPreBuildSourceFile)"/>
-    <Message Text="Source code backup has been sucessfully completed at this location: $(BackupPreBuildSourceFile)"></Message>
+      ZipFileName="$(BackupSourceFilePreBuild)"/>
+    <Message Text="Source code backup has been sucessfully completed at this location: $(BackupSourceFilePreBuild)"></Message>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
     
@@ -136,8 +136,8 @@
     <MSBuild.ExtensionPack.Compression.Zip
       TaskAction="Create"
       CompressPath="$(DeploymentDir)"
-      ZipFileName="$(BackupPostBuildDeploymentFile)"/>
-    <Message Text="Build backup has been sucessfully completed at this location: $(BackupPostBuildDeploymentFile)"></Message>
+      ZipFileName="$(BackupDeploymentFilePostBuild)"/>
+    <Message Text="Build backup has been sucessfully completed at this location: $(BackupDeploymentFilePostBuild)"></Message>
 
     
 
@@ -156,9 +156,9 @@
     <MSBuild.ExtensionPack.Compression.Zip
       TaskAction="Create"
       CompressPath="$(DestinationDir)"
-      ZipFileName="$(BackupPreBuildDestinationFile)"/>
+      ZipFileName="$(BackupDestinationFilePreBuild)"/>
     
-    <Message Text="$(CurrentTargetName) has been sucessfully completed at this location: $(BackupPreBuildDestinationFile)"></Message>
+    <Message Text="$(CurrentTargetName) has been sucessfully completed at this location: $(BackupDestinationFilePreBuild)"></Message>
     
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
     
