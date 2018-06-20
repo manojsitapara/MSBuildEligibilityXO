@@ -584,10 +584,10 @@
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
 
-    <CallTarget Targets="ConfigTranformationForCXCCore"></CallTarget>
-    <CallTarget Targets="ConfigTranformationForTPA"></CallTarget>
+    <CallTarget Targets="TranformConfigForCXCCore"></CallTarget>
+    <CallTarget Targets="TranformConfigForTPA"></CallTarget>
 
-    <CallTarget Targets="ConfigTranformationForDbDeploy"></CallTarget>
+    <CallTarget Targets="TranformConfigForDbDeploy"></CallTarget>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -596,10 +596,10 @@
 
   </Target>
 
-  <Target Name="ConfigTranformationForCXCCore" Condition="$(BuildEligibilityXOEngine) == 'true' ">
+  <Target Name="TranformConfigForCXCCore" Condition="$(BuildEligibilityXOEngine) == 'true' ">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForCXCCore'">ConfigTranformationForCXCCore</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TranformConfigForCXCCore'">TranformConfigForCXCCore</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
@@ -681,10 +681,10 @@
 
   </Target>
 
-  <Target Name="ConfigTranformationForTPA" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
+  <Target Name="TranformConfigForTPA" Inputs="%(SolutionName.Identity)" Outputs="%(SolutionName.Identity)\Ignore_this">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForTPA'">ConfigTranformationForTPA</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TranformConfigForTPA'">TranformConfigForTPA</CurrentTargetName>
       <BuildDirForStateParamXmlFile>%(SolutionName.BuildDirForStateParamXmlFile)</BuildDirForStateParamXmlFile>
     </PropertyGroup>
 
@@ -706,10 +706,10 @@
 
   </Target>
 
-  <Target Name="ConfigTranformationForDbDeploy">
+  <Target Name="TranformConfigForDbDeploy">
 
     <PropertyGroup>
-      <CurrentTargetName Condition="'$(CurrentTargetName)'!='ConfigTranformationForDbDeploy'">ConfigTranformationForDbDeploy</CurrentTargetName>
+      <CurrentTargetName Condition="'$(CurrentTargetName)'!='TranformConfigForDbDeploy'">TranformConfigForDbDeploy</CurrentTargetName>
     </PropertyGroup>
 
     <Message Text="============= $(CurrentTargetName) target has been started. ============= " />
