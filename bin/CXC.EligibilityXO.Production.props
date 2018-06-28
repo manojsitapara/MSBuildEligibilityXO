@@ -9,11 +9,13 @@
     <!-- MSBuild script folder structure settings -->
 
     <!-- Specify the root directory to create msbuild script folder structure -->
-    <RootDir>E:\MSBuildTestingProduction\QA</RootDir>
-    <!--Database Backup Directory-->
-    <DatabaseBackupDir>E:\MSBuildTestingProduction\QA</DatabaseBackupDir>
-    <!-- Specify the path to copy build code on server -->
-    <DestinationDir>E:\MSBuildTestingProduction\QA\QAServer</DestinationDir>
+    <RootDir>E:\MSBuildTesting\EligibilityXO\Production</RootDir>
+    <!--For local database backup use $(RootDir)\Backup\Database, for remote backup, specify the full path -->
+    <BackupDirForDatabase>$(RootDir)\Backup\Database</BackupDirForDatabase>
+    <!--For local database backup use $(RootDir)\Backup\Destination, for remote backup, specify the full path -->
+    <BackupDirForDestination>$(RootDir)\Backup\Destination</BackupDirForDestination>
+    <!-- Specify the path to push build on target server -->
+    <DestinationDir>$(RootDir)\ProductionServer</DestinationDir>
 
     <!-- Source code SVN settings -->
 
@@ -39,42 +41,34 @@
     <CheckInAssemblyInfo>false</CheckInAssemblyInfo>
     <!--Set value true to create svn lable under svn tag branch-->
     <CreateSVNLabel>false</CreateSVNLabel>
-    <!--Set value true to send error email notification (e.g. on failing build script etc.) -->
-    <SendEmailNotification>true</SendEmailNotification>
-
 
 
     <!-- Build code settings-->
-    <!--Set value to onlypush to push build code on destination-->
-    <!--Set value to false to only build code on deployment -->
-    <!--Set value to empty to execute normal msbuild workflow -->
+    <!--Set value to onlypush to push build  on destination-->
+    <!--Set value to onlybuild to just build  on deployment -->
+    <!--Set value to empty to execute normal msbuild workflow, Build & Push -->
     <OnlyBuildOrOnlyPush></OnlyBuildOrOnlyPush>
 
 
     <!--Sql server settings -->
 
     <!--Set value to true, if windows authentication required-->
-    <IsSqlWindowsAuthentication>false</IsSqlWindowsAuthentication>
+    <IsSqlWindowsAuthentication>true</IsSqlWindowsAuthentication>
     <!--Specify Sql server Version e.g. 2008, 2012 or 2014 -->
     <SqlServerVersion>2014</SqlServerVersion>
     <!--Specify Sql server name-->
     <SqlServerName>C6yt9c6/EWmWT62MOcWSTQ==</SqlServerName>
 
     <!--Specify sql user name, if IsSqlWindowsAuthentication flag value is false, else keep empty -->
-    <!--4cZZdPhKttntu1j59ka/qw==-->
-    <SqlServerUserName>90GqeL/11Q1f9d+DlZFFNg==</SqlServerUserName>
+    <!--90GqeL/11Q1f9d+DlZFFNg==-->
+    <SqlServerUserName></SqlServerUserName>
     <!--Specify sql password, if IsSqlWindowsAuthentication flag value is false, else keep empty  -->
-    <!--M9xUe6A9Al+OsrB3va5GOw==-->
+    <!--yj7iZ/96Q8zi6Isn4XkV5g==-->
     <SqlServerPassword>yj7iZ/96Q8zi6Isn4XkV5g==</SqlServerPassword>
 
     <!--specify database name -->
-    <ApplicationDatabaseName>BWcHq975PCspJW+/5L9Xs0StTYiMZ5Q0ekQihH6SvFM=</ApplicationDatabaseName>
+    <ApplicationDatabaseName>BWcHq975PCspJW+/5L9Xs2oCcnMNlLASvxnZWXdcqmR77GyTQaIeq20uheWu8CBJ</ApplicationDatabaseName>
 
-
-
-
-    <!--Specify TO email address to send error email notification -->
-    <ErrorNotificationToAddress>manojs@cxcnetwork.com</ErrorNotificationToAddress>
 
     <!--Specify assembly build number needs to set (e.g. 2016.10.01.0) -->
     <AssemblyBuildNumber>2018.02.05.01</AssemblyBuildNumber>

@@ -48,9 +48,9 @@
     <!-- Specify the path to backup of deployment code -->
     <BackupDirForDeployment>$(BackupDir)\Deployment</BackupDirForDeployment>
     <!-- Specify the path to backup of database -->
-    <BackupDirForDatabase>$(DatabaseBackupDir)</BackupDirForDatabase>
-    <!-- Specify the path to back up build code on server -->
-    <BackupDirForDestination>$(BackupDir)\Destination</BackupDirForDestination>
+    <!--<BackupDirForDatabase>$(DatabaseBackupDir)</BackupDirForDatabase>-->
+    <!-- Specify the path to back up build code on server --><!--
+    <BackupDirForDestination>$(BackupDir)\Destination</BackupDirForDestination>-->
 
 
     

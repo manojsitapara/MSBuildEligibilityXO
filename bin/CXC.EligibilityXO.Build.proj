@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Run">
-
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <!--msbuild CXC.EligibilityXO.Build.proj /t:Build /logger:H:\Work\Source\Github\MSBuildEligibilityXO\lib\CXC.CustomLogger.dll;FromEmailAddress=alertsqa@cxcnetwork.com;ToEmailAddress=manojs@cxcnetwork.com-->
   <!-- Region Import External target -->
 
   <Import Project="CXC.EligibilityXO.BuildTasks.tasks" />
@@ -77,7 +77,7 @@
   </Target>
 
 
-  <Target Name="DecryptSqlServerUserInfoValue">
+  <Target Name="DecryptSqlServerUserInfoValue" Condition=" '$(IsSqlWindowsAuthentication)' =='false'">
 
     <PropertyGroup>
       <CurrentTargetName>DecryptSqlServerUserInfoValue</CurrentTargetName>
@@ -758,10 +758,20 @@
       <SvnDestinationPath Condition="'$(VersionNumber)' == '' ">$(SVNTagURL)/$(Environment)_$(CurrentDateTime)</SvnDestinationPath>
     </PropertyGroup>
 
+    <Exec Command='$(LibDir)\DecryptUtility\DecryptUtility.exe $(SvnUsername)' />
+    <ReadLinesFromFile File="@(OutputFileName)">
+      <Output TaskParameter="Lines" PropertyName="DecryptSVNUserName" />
+    </ReadLinesFromFile>
+
+    <Exec Command='$(LibDir)\DecryptUtility\DecryptUtility.exe $(SvnPassword)' />
+    <ReadLinesFromFile File="@(OutputFileName)">
+      <Output TaskParameter="Lines" PropertyName="DecryptSVNPassword" />
+    </ReadLinesFromFile>
+
     <SvnCopy SourcePath="$(SVNSourceURL)"
       DestinationPath="$(SvnDestinationPath)"
       Message="Manoj_$(CurrentDate)_$(VersionNumber)"
-      Username="$(SvnUsername)" password="$(SvnPassword)"/>
+      Username="$(DecryptSVNUserName)" password="$(DecryptSVNPassword)"/>
 
     <Message Text="============= $(CurrentTargetName) target has been completed. ============= " />
 
@@ -879,7 +889,7 @@
 
   </Target>
 
-  <Target Name="SaveAssemblyVersionInDestinationDatabase" Condition="Exists(@(GeneratedAssemblyFileName))">
+  <Target Name="SaveAssemblyVersionInDestinationDatabase" Condition="Exists(@(GeneratedAssemblyFileName)) AND $(UpdateBuildVersion) == 'true' ">
 
     <PropertyGroup>
       <CurrentTargetName Condition="'$(CurrentTargetName)'!='SaveAssemblyVersionInDestinationDatabase'">SaveAssemblyVersionInDestinationDatabase</CurrentTargetName>
@@ -965,15 +975,7 @@
 
     <CallTarget Targets="DeployBuildToDestination"></CallTarget>
 
-  </Target>
-
-
-  <Target Name="Run">
-    
-    <Exec Command="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe $(MSBuildThisFile) /t:Build /logger:$(LibDir)\CXC.CustomLogger.dll;FromEmailAddress=$(EmailNotificationFromAddress);ToEmailAddress=$(ErrorNotificationToAddress)  "/>
     <CallTarget Targets="CleanTempFiles" Condition="$(MSBuildLastTaskResult) == 'True' and ($(OnlyBuildOrOnlyPush) == 'onlypush' or $(OnlyBuildOrOnlyPush) == '') " />
-
-    
 
   </Target>
 

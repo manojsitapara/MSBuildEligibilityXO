@@ -68,17 +68,4 @@
     </Task>
   </UsingTask>
 
-
- 
-  <!--Send msbuild failed error email notification-->
-  <!--<Target Name="SendEmailNotification">
-    <SendEmail
-      ToEmailAddress="$(ErrorNotificationToAddress)"
-      Subject="Build failed"
-      Message="Target name $(CurrentTargetName) has been failed to execute. " />
-  </Target>-->
-  
-  
-
-
 </Project>
